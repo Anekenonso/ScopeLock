@@ -12,9 +12,11 @@ node_modules/
 dist/
 *.tsbuildinfo
 
-# Agent and IDE skills
+# Agent and IDE skills / internal build plan
 .agents/
 .claude/
 agent/
 skills-lock.json
+ScopeLock_Agent_Build_Plan.md
+
 
