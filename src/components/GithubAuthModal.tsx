@@ -14,12 +14,14 @@ interface GithubAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (user: GithubUser) => void;
+  actionReason?: string;
 }
 
 export function GithubAuthModal({
   isOpen,
   onClose,
   onSuccess,
+  actionReason,
 }: GithubAuthModalProps) {
   const [customUsername, setCustomUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,12 +44,20 @@ export function GithubAuthModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-floating p-6 sm:p-8 space-y-6 animate-in zoom-in-95 duration-200 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-floating p-6 sm:p-8 space-y-5 animate-in slide-in-from-bottom-6 sm:slide-in-from-top-6 duration-300 ease-out text-slate-900 relative">
+        {/* Action Reason Banner if triggered by a protected feature */}
+        {actionReason && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-light/80 border border-brand/20 text-brand text-xs font-bold">
+            <Lock className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="truncate">Sign in to unlock &ldquo;{actionReason}&rdquo;</span>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-slate-950 text-white flex items-center justify-center shadow-sm">
               <Github className="w-5 h-5" />
             </div>
             <div>
@@ -55,7 +65,7 @@ export function GithubAuthModal({
                 Sign in with GitHub
               </h3>
               <p className="text-xs text-slate-500">
-                Connect your developer profile to ScopeLock
+                Connect your developer profile to continue
               </p>
             </div>
           </div>

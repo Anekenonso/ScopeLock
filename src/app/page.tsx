@@ -42,6 +42,8 @@ export default function WorkspacePage() {
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isGithubModalOpen, setIsGithubModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<GithubUser | null>(null);
+  const [pendingAction, setPendingAction] = useState<"brief" | "demo" | null>(null);
+  const [authTriggerReason, setAuthTriggerReason] = useState<string>("");
 
   const [isDraftMode, setIsDraftMode] = useState(false);
   const [draftItems, setDraftItems] = useState<ScopeItem[]>([]);
@@ -61,6 +63,26 @@ export default function WorkspacePage() {
 
   const dismissToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleLoadDemoProject = () => {
+    const demo = StorageRepository.loadDemoProject();
+    setProject(demo);
+    setActiveBaseline(demo.baselines[0]);
+    setIsDraftMode(false);
+    setComparisonResult(null);
+    setCurrentRequestText("");
+    addToast("success", "Loaded SaaS Demo", "Acme SaaS Portal with 8 deliverables ready.");
+  };
+
+  const requireAuthFor = (action: "brief" | "demo", actionLabel: string): boolean => {
+    if (!currentUser) {
+      setPendingAction(action);
+      setAuthTriggerReason(actionLabel);
+      setIsGithubModalOpen(true);
+      return false;
+    }
+    return true;
   };
 
   // Load project & user profile on mount
@@ -97,6 +119,21 @@ export default function WorkspacePage() {
       // Ignored
     }
     addToast("success", "Connected to GitHub", `Signed in as @${user.username}.`);
+
+    // Automatically execute the action that triggered the login modal
+    if (pendingAction === "brief") {
+      setIsBriefModalOpen(true);
+    } else if (pendingAction === "demo") {
+      handleLoadDemoProject();
+    }
+    setPendingAction(null);
+    setAuthTriggerReason("");
+  };
+
+  const handleCloseGithubModal = () => {
+    setIsGithubModalOpen(false);
+    setPendingAction(null);
+    setAuthTriggerReason("");
   };
 
   const handleSignOutGithub = () => {
@@ -258,14 +295,14 @@ export default function WorkspacePage() {
         onSignOutGithub={handleSignOutGithub}
         onExport={handleExportJson}
         onResetPrompt={() => setIsResetModalOpen(true)}
-        onNewProjectPrompt={() => setIsBriefModalOpen(true)}
+        onNewProjectPrompt={() => {
+          if (!requireAuthFor("brief", "Get Started")) return;
+          setIsBriefModalOpen(true);
+        }}
         onSelectTestScenario={handleSelectTestScenario}
         onLoadDemoPrompt={() => {
-          const demo = StorageRepository.loadDemoProject();
-          setProject(demo);
-          setActiveBaseline(demo.baselines[0]);
-          setIsDraftMode(false);
-          addToast("success", "Loaded SaaS Demo", "Acme SaaS Portal with 8 deliverables ready.");
+          if (!requireAuthFor("demo", "Load Demo")) return;
+          handleLoadDemoProject();
         }}
       />
 
@@ -310,7 +347,10 @@ export default function WorkspacePage() {
           {/* Hero Action Pill Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-md mx-auto">
             <button
-              onClick={() => setIsBriefModalOpen(true)}
+              onClick={() => {
+                if (!requireAuthFor("brief", "Initialize from Brief")) return;
+                setIsBriefModalOpen(true);
+              }}
               className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-slate-950 text-white font-extrabold text-sm hover:bg-slate-800 shadow-soft transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -319,11 +359,8 @@ export default function WorkspacePage() {
 
             <button
               onClick={() => {
-                const demo = StorageRepository.loadDemoProject();
-                setProject(demo);
-                setActiveBaseline(demo.baselines[0]);
-                setIsDraftMode(false);
-                addToast("success", "Loaded SaaS Demo", "Acme SaaS Portal loaded with 8 deliverables.");
+                if (!requireAuthFor("demo", "Try Live Demo")) return;
+                handleLoadDemoProject();
               }}
               className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-sm transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2 shadow-sm"
             >
@@ -506,8 +543,9 @@ export default function WorkspacePage() {
 
       <GithubAuthModal
         isOpen={isGithubModalOpen}
-        onClose={() => setIsGithubModalOpen(false)}
+        onClose={handleCloseGithubModal}
         onSuccess={handleSignInGithub}
+        actionReason={authTriggerReason}
       />
 
       {comparisonResult && activeBaseline && (

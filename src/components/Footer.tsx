@@ -58,7 +58,7 @@ export function Footer() {
             <ul className="space-y-1.5 text-xs text-slate-600">
               <li>
                 <a
-                  href="https://devpost.com"
+                  href="https://learn-ai-basics.devpost.com/"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-slate-900 transition-colors inline-flex items-center gap-1"
@@ -69,7 +69,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/Anekenonso/ScopeLock"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-slate-900 transition-colors inline-flex items-center gap-1"
