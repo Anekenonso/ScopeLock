@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Paste an in-scope request ("Stripe payment") and an out-of-scope request ("SMS receipts via Twilio"), check the badges and rationales, record a decision with a note, and see it appear in the History list.
   Commit: `Complete request comparison and decision logging slice`
 
-- [ ] **4. Baseline versioning, refresh persistence, and export/reset**
+- [x] **4. Baseline versioning, refresh persistence, and export/reset**
   Becomes usable: Full audit integrity and data portability: editing the baseline creates a draft and bumps to `v2.0` upon approval while preserving past decisions tied to `v1.0`; the workspace survives browser refresh; "Export JSON" downloads project data; "Reset Project" safely purges data after modal confirmation.
   Why now: Fulfills the audit durability guarantee, handles browser reloads, and ensures data safety without risk of silent corruption.
   PRD ref: `prd.md > 1. The Core Journey` (steps 7-8), `prd.md > 4.4 Baseline Evolution & Versioning`, `prd.md > 5. States and Boundaries`
