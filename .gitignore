@@ -1,0 +1,12 @@
+# Devpost Learn personal profile
+/devpost/learner-profile.md
+
+# Environment and local files
+.env
+.env.*
+!.env.example
+
+# Dependencies & build
+node_modules/
+.next/
+dist/

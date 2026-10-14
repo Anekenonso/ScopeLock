@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScopeLock — Technical Specification Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0F19;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #F1F5F9;
+      --text-muted: #94A3B8;
+      --primary: #38BDF8;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --violet: #8B5CF6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1.5rem 4rem;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 70%, rgba(139, 92, 246, 0.07) 0%, transparent 40%);
+    }
+    .container { max-width: 1050px; margin: 0 auto; }
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.5rem;
+    }
+    .badge-bar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+    .badge-primary { background: var(--primary-glow); color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-draft { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    h1 { font-size: 2.25rem; font-weight: 700; color: #FFF; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 1.05rem; color: var(--text-muted); max-width: 800px; }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: #FFF; }
+    .tab-btn.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Diagram Card */
+    .diagram-card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 0.5rem;
+    }
+    th {
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    td {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #CBD5E1;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* Pills */
+    .pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .pill-rose { background: rgba(244, 63, 94, 0.15); color: var(--rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    pre code {
+      display: block;
+      background: #0F172A;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #E2E8F0;
+      overflow-x: auto;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-bar">
+        <span class="badge badge-primary">Devpost Learn AI Basics</span>
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3);">Spec Approved</span>
+      </div>
+      <h1>ScopeLock Technical Blueprint</h1>
+      <p class="subtitle">Architecture, data schemas, deterministic comparison engine, file tree, and Gate 1 kill-test matrix for ScopeLock V1.</p>
+    </header>
+
+    <!-- Architecture & Data Flow Diagram -->
+    <div class="diagram-card">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+        SYSTEM ARCHITECTURE & DATA FLOW
+      </div>
+      <svg viewBox="0 0 960 210" width="100%" height="210" xmlns="http://www.w3.org/2000/svg">
+        <!-- Next.js Client Workspace -->
+        <rect x="10" y="20" width="940" height="175" rx="10" fill="none" stroke="#334155" stroke-dasharray="4 4" stroke-width="1.5"/>
+        <text x="30" y="42" fill="#64748B" font-size="11" font-family="'JetBrains Mono', monospace" font-weight="600">CLIENT BROWSER RUNTIME (NEXT.JS APP ROUTER • ZERO BACKEND)</text>
+
+        <!-- Component 1: UI View -->
+        <rect x="30" y="60" width="230" height="115" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="145" y="85" fill="#38BDF8" font-size="12" font-weight="bold" text-anchor="middle">Workspace UI (React)</text>
+        <text x="145" y="105" fill="#94A3B8" font-size="10" text-anchor="middle">Left: Active Baseline v1.0</text>
+        <text x="145" y="122" fill="#94A3B8" font-size="10" text-anchor="middle">Right: Request Input & Card</text>
+        <text x="145" y="140" fill="#64748B" font-size="9" text-anchor="middle">Tailwind CSS (Linear Dark)</text>
+
+        <!-- Connector 1 -> 2 -->
+        <path d="M 260 115 L 340 115" stroke="#38BDF8" stroke-width="2"/>
+        <text x="300" y="105" fill="#94A3B8" font-size="9" text-anchor="middle">Evaluate</text>
+
+        <!-- Component 2: Engine -->
+        <rect x="345" y="60" width="270" height="115" rx="8" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="480" y="85" fill="#C4B5FD" font-size="12" font-weight="bold" text-anchor="middle">ScopeComparator (Pure TS)</text>
+        <text x="480" y="105" fill="#94A3B8" font-size="10" text-anchor="middle">Tokenizer • Stopwords • N-Grams</text>
+        <text x="480" y="122" fill="#94A3B8" font-size="10" text-anchor="middle">Novel Action/Vendor Detector</text>
+        <text x="480" y="145" fill="#10B981" font-size="10" font-weight="600" text-anchor="middle">12 Synthetic Kill-Tests Verified</text>
+
+        <!-- Connector 2 -> 3 -->
+        <path d="M 615 115 L 695 115" stroke="#10B981" stroke-width="2"/>
+        <text x="655" y="105" fill="#94A3B8" font-size="9" text-anchor="middle">Record</text>
+
+        <!-- Component 3: Storage -->
+        <rect x="700" y="60" width="230" height="115" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+        <text x="815" y="85" fill="#10B981" font-size="12" font-weight="bold" text-anchor="middle">Storage Layer (Zod)</text>
+        <text x="815" y="105" fill="#94A3B8" font-size="10" text-anchor="middle">localStorage Repository</text>
+        <text x="815" y="122" fill="#94A3B8" font-size="10" text-anchor="middle">Immutable Baseline Versions</text>
+        <text x="815" y="140" fill="#64748B" font-size="9" text-anchor="middle">Audit Logs • JSON Backup</text>
+      </svg>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-matrix')">Gate 1: Kill-Test Matrix</button>
+      <button class="tab-btn" onclick="switchTab('tab-stack')">Tech Stack & Rationale</button>
+      <button class="tab-btn" onclick="switchTab('tab-schema')">Zod Schemas & Types</button>
+      <button class="tab-btn" onclick="switchTab('tab-tree')">File Structure</button>
+      <button class="tab-btn" onclick="switchTab('tab-gates')">Build Sequence & Gates</button>
+    </div>
+
+    <!-- TAB 1: Kill-Test Matrix -->
+    <div id="tab-matrix" class="tab-content active">
+      <div class="card">
+        <div class="card-title">12 Synthetic Kill-Test Cases (Verified Before UI)</div>
+        <p style="color: #94A3B8; font-size: 0.95rem; margin-bottom: 1rem;">
+          These 12 cases must execute and pass in <code>tests/unit/comparator.test.ts</code> via Vitest before any UI implementation begins.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Request Text</th>
+              <th>Baseline Item</th>
+              <th>Status</th>
+              <th>Expected Match & Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>"Can you implement user login with email and password?"</td>
+              <td>#1: User Auth (email/password)</td>
+              <td><span class="pill pill-green">IN_SCOPE</span></td>
+              <td>Matches #1. Direct token overlap.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>"We need a checkout page for Stripe credit card payments."</td>
+              <td>#2: Stripe checkout</td>
+              <td><span class="pill pill-green">IN_SCOPE</span></td>
+              <td>Matches #2. Direct token overlap.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>"Can users view their past order history and invoices?"</td>
+              <td>#3: Order history & invoices</td>
+              <td><span class="pill pill-green">IN_SCOPE</span></td>
+              <td>Matches #3. Exact capability match.</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>"Can we also send SMS receipts via Twilio when someone buys?"</td>
+              <td>#2: Stripe checkout</td>
+              <td><span class="pill pill-rose">POSSIBLE_CHANGE</span></td>
+              <td>Matches #2 flow, but flags novel vendor: Twilio/SMS.</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>"We'd like to build an iOS and Android mobile app version."</td>
+              <td>Web app baseline</td>
+              <td><span class="pill pill-rose">POSSIBLE_CHANGE</span></td>
+              <td>No match. Novel platform entity: mobile.</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>"Please add multi-currency conversion with live forex rates."</td>
+              <td>#2: Stripe checkout (USD)</td>
+              <td><span class="pill pill-rose">POSSIBLE_CHANGE</span></td>
+              <td>Matches #2, flags novel capability: forex/currency.</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>"Could we export monthly reports to Excel or PDF format?"</td>
+              <td>#3: Order history table</td>
+              <td><span class="pill pill-rose">POSSIBLE_CHANGE</span></td>
+              <td>Matches #3, flags novel export formats: PDF/Excel.</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>"Make sure the buttons look good."</td>
+              <td>General styling</td>
+              <td><span class="pill pill-amber">NEEDS_REVIEW</span></td>
+              <td>Ambiguous subjective instruction.</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>"Is the checkout fast?"</td>
+              <td>#2: Stripe checkout</td>
+              <td><span class="pill pill-amber">NEEDS_REVIEW</span></td>
+              <td>Performance question, not a feature request.</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>"Add social login via Google and GitHub."</td>
+              <td>#1: User Auth (email/password)</td>
+              <td><span class="pill pill-amber">NEEDS_REVIEW</span></td>
+              <td>Partial overlap with Auth, but novel OAuth providers.</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>"Include dark mode support across all screens."</td>
+              <td>Visual baseline</td>
+              <td><span class="pill pill-rose">POSSIBLE_CHANGE</span></td>
+              <td>Novel system-wide theme capability.</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>"" (Empty / whitespace text)</td>
+              <td>Any baseline</td>
+              <td><span class="pill pill-amber">NEEDS_REVIEW</span></td>
+              <td>Empty input validation fallback.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 2: Stack & Rationale -->
+    <div id="tab-stack" class="tab-content">
+      <div class="card">
+        <div class="card-title">Technology Decisions & Architecture Boundaries</div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 1rem;">
+            <strong>Next.js (App Router, React 19, TypeScript):</strong> Chosen for its production structure and clean typing. Keeps V1 pure client-side while offering an easy path to server routes and extensions in V2/V3.
+          </li>
+          <li style="margin-bottom: 1rem;">
+            <strong>Zod Schema Engine:</strong> Ensures all reads and writes to browser <code>localStorage</code> are validated against explicit runtime schemas. If corrupted data is detected, it fails gracefully without crashing the UI.
+          </li>
+          <li style="margin-bottom: 1rem;">
+            <strong>Pure Isolated Comparator:</strong> The comparison engine is a standalone TypeScript class implementing <code>ScopeComparator</code>. Decoupled from React and storage so it can be tested in headless environments and swapped in future versions.
+          </li>
+          <li style="margin-bottom: 1rem;">
+            <strong>Zero External Dependencies / Secrets:</strong> Requires no API keys, no backend databases, and makes no network requests. 100% private to the user's browser.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TAB 3: Schema -->
+    <div id="tab-schema" class="tab-content">
+      <div class="card">
+        <div class="card-title">Zod Storage Schema Specification</div>
+        <pre><code>export const BaselineVersionSchema = z.object({
+  id: z.string(),
+  versionNumber: z.string(), // "v1.0", "v2.0"
+  items: z.array(ScopeItemSchema),
+  sourceBrief: z.string(),
+  approvedAt: z.string(),
+});
+
+export const DecisionRecordSchema = z.object({
+  id: z.string(),
+  requestId: z.string(),
+  requestText: z.string(),
+  status: z.enum(["IN_SCOPE", "POSSIBLE_CHANGE", "NEEDS_REVIEW"]),
+  matchedItemIds: z.array(z.string()),
+  rationale: z.string(),
+  uncertaintyWarning: z.string().optional(),
+  action: z.enum(["ACCEPT", "REJECT", "CLARIFY"]),
+  note: z.string().optional(),
+  baselineVersionId: z.string(),
+  baselineVersionNumber: z.string(),
+  decidedAt: z.string(),
+});</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 4: File Structure -->
+    <div id="tab-tree" class="tab-content">
+      <div class="card">
+        <div class="card-title">Annotated Planned File Structure</div>
+        <pre><code>ScopeLock/
+├── devpost/                         # Devpost learning artifacts
+│   ├── learner-profile.md
+│   ├── scope.md / scope.html
+│   ├── prd.md / prd.html
+│   └── spec.md / spec.html
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx               # Root layout & Inter/JetBrains fonts
+│   │   ├── page.tsx                 # Main split-view workspace
+│   │   └── globals.css              # Linear dark palette & utility styles
+│   ├── components/
+│   │   ├── Header.tsx               # Project title, version badge, Export/Reset
+│   │   ├── BaselinePanel.tsx        # Left: Active baseline items, draft editor
+│   │   ├── RequestInput.tsx         # Textarea & Compare button
+│   │   ├── ComparisonCard.tsx       # Status pill, matched tags, rationale, actions
+│   │   ├── HistoryFeed.tsx          # Chronological audit feed
+│   │   ├── BriefIngestModal.tsx     # Brief paste & parse modal
+│   │   └── ResetConfirmModal.tsx    # Wipe confirmation modal
+│   └── lib/
+│       ├── comparator/
+│       │   ├── index.ts             # ScopeComparator interface
+│       │   ├── deterministic.ts     # Heuristic tokenizer & rule engine
+│       │   └── rules.ts             # Vendor list, verbs, stop words
+│       ├── storage/
+│       │   ├── schema.ts            # Zod schemas & types
+│       │   └── repository.ts        # LocalStorage wrapper & JSON export
+│       └── parser/
+│           └── briefParser.ts       # Bullet point / list extractor
+└── tests/
+    ├── unit/
+    │   ├── comparator.test.ts       # 12 synthetic kill-tests (Vitest)
+    │   ├── storage.test.ts          # Zod validation & recovery tests
+    │   └── parser.test.ts           # List parsing unit tests
+    └── e2e/
+        └── critical-journey.spec.ts # Full Playwright browser walkthrough</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 5: Gates -->
+    <div id="tab-gates" class="tab-content">
+      <div class="card">
+        <div class="card-title">Verification Sequence & Evidence Gates</div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 0.75rem;">
+            <strong>Gate 0: Foundation Setup:</strong> Initialize Next.js, TypeScript, Tailwind, Zod, and Vitest test harness.
+          </li>
+          <li style="margin-bottom: 0.75rem;">
+            <strong>Gate 1: Kill-Test Verification:</strong> Implement <code>deterministic.ts</code> and execute <code>tests/unit/comparator.test.ts</code>. Require 100% pass on all 12 cases before UI work.
+          </li>
+          <li style="margin-bottom: 0.75rem;">
+            <strong>Gate 2: Storage & Ingestion Slice:</strong> Implement <code>briefParser.ts</code> and <code>repository.ts</code>. Verify baseline creation, draft editing, and version bumping (`v1.0` -> `v2.0`).
+          </li>
+          <li style="margin-bottom: 0.75rem;">
+            <strong>Gate 3: End-to-End Vertical Slice:</strong> Connect UI split-view workspace. Verify brief paste -> baseline approval -> request compare -> decision logging -> browser refresh.
+          </li>
+          <li style="margin-bottom: 0.75rem;">
+            <strong>Gate 4: Edge Cases & Reliability:</strong> Verify empty state, corrupted storage recovery, JSON export, and confirmed project reset.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      ScopeLock Planning Artifact • Canonical Markdown in <code>devpost/spec.md</code>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
