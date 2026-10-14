@@ -3,11 +3,22 @@
 import React, { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { BaselinePanel } from "@/components/BaselinePanel";
+import { RequestInput } from "@/components/RequestInput";
+import { ComparisonCard } from "@/components/ComparisonCard";
+import { HistoryFeed } from "@/components/HistoryFeed";
 import { BriefIngestModal } from "@/components/BriefIngestModal";
 import { ResetConfirmModal } from "@/components/ResetConfirmModal";
 import { StorageRepository } from "@/lib/storage/repository";
 import { parseBriefIntoScopeItems } from "@/lib/parser/briefParser";
-import { Project, ScopeItem, BaselineVersion } from "@/types";
+import { createComparator } from "@/lib/comparator";
+import {
+  Project,
+  ScopeItem,
+  BaselineVersion,
+  ComparisonResult,
+  DecisionAction,
+  DecisionRecord,
+} from "@/types";
 import { PlusCircle, Sparkles, AlertCircle } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -18,6 +29,10 @@ export default function WorkspacePage() {
   const [isDraftMode, setIsDraftMode] = useState(false);
   const [draftItems, setDraftItems] = useState<ScopeItem[]>([]);
   const [activeBaseline, setActiveBaseline] = useState<BaselineVersion | null>(null);
+
+  // Comparison State
+  const [currentRequestText, setCurrentRequestText] = useState<string>("");
+  const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
 
   // Load project on mount
   useEffect(() => {
@@ -45,6 +60,7 @@ export default function WorkspacePage() {
     setIsDraftMode(true);
     setActiveBaseline(null);
     setIsBriefModalOpen(false);
+    setComparisonResult(null);
   };
 
   const handleApproveBaseline = (items: ScopeItem[]) => {
@@ -99,6 +115,40 @@ export default function WorkspacePage() {
     }
   };
 
+  // Compare request against active baseline items
+  const handleCompareRequest = (requestText: string) => {
+    if (!activeBaseline) return;
+    const comparator = createComparator();
+    const result = comparator.evaluate(requestText, activeBaseline.items);
+    setCurrentRequestText(requestText);
+    setComparisonResult(result);
+  };
+
+  // Record human decision
+  const handleRecordDecision = (action: DecisionAction, note: string) => {
+    if (!project || !activeBaseline || !comparisonResult) return;
+
+    const record: DecisionRecord = {
+      id: `dec-${Date.now()}`,
+      requestId: `req-${Date.now()}`,
+      requestText: currentRequestText,
+      status: comparisonResult.status,
+      matchedItemIds: comparisonResult.matchedItemIds,
+      rationale: comparisonResult.rationale,
+      uncertaintyWarning: comparisonResult.uncertaintyWarning,
+      action,
+      note: note || undefined,
+      baselineVersionId: activeBaseline.id,
+      baselineVersionNumber: activeBaseline.versionNumber,
+      decidedAt: new Date().toISOString(),
+    };
+
+    const updated = StorageRepository.addDecision(project, record);
+    setProject(updated);
+    setComparisonResult(null);
+    setCurrentRequestText("");
+  };
+
   const handleExportJson = () => {
     if (!project) return;
     const jsonStr = StorageRepository.exportJson(project);
@@ -118,6 +168,8 @@ export default function WorkspacePage() {
     setDraftItems([]);
     setIsDraftMode(false);
     setIsCorrupted(false);
+    setComparisonResult(null);
+    setCurrentRequestText("");
   };
 
   return (
@@ -206,19 +258,40 @@ export default function WorkspacePage() {
             />
           </section>
 
-          {/* Right Panel: Placeholder for Slice 3 Request Comparison */}
-          <section className="md:col-span-7 h-full overflow-y-auto p-6 bg-canvas/40 flex flex-col justify-center items-center text-center">
-            <div className="max-w-md p-6 rounded-xl border border-surface-border bg-surface/50 text-slate-400 space-y-3">
-              <div className="w-8 h-8 rounded-full bg-brand/10 border border-brand/30 text-brand flex items-center justify-center mx-auto">
-                <Sparkles className="w-4 h-4" />
+          {/* Right Panel: Request Evaluation & Decision Audit */}
+          <section className="md:col-span-7 h-full overflow-y-auto p-6 space-y-5 bg-canvas/40">
+            {/* 1. Request Input */}
+            <RequestInput
+              onCompare={handleCompareRequest}
+              disabled={!activeBaseline || isDraftMode}
+            />
+
+            {/* In Draft Mode Warning */}
+            {isDraftMode && (
+              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center gap-2 font-mono">
+                <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span>
+                  Baseline is in draft mode. Click &ldquo;Approve Baseline&rdquo; on the left to activate request comparison.
+                </span>
               </div>
-              <h3 className="text-sm font-semibold text-white">
-                Baseline v1.0 Established & Locked
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Slice 2 complete! The client brief has been parsed and approved as an immutable baseline. In Slice 3, we connect the incoming request input, live comparison result card, and decision logging.
-              </p>
-            </div>
+            )}
+
+            {/* 2. Comparison Result Card */}
+            {comparisonResult && activeBaseline && (
+              <ComparisonCard
+                requestText={currentRequestText}
+                result={comparisonResult}
+                baselineItems={activeBaseline.items}
+                onRecordDecision={handleRecordDecision}
+                onClear={() => {
+                  setComparisonResult(null);
+                  setCurrentRequestText("");
+                }}
+              />
+            )}
+
+            {/* 3. Decision Audit History Feed */}
+            <HistoryFeed decisions={project.decisions} />
           </section>
         </main>
       )}

@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Open `http://localhost:3000`, paste a brief with bullet points, edit an item, click "Approve Baseline v1.0", and confirm the items lock with the `Baseline v1.0 • Approved` badge.
   Commit: `Add brief parsing and baseline approval flow`
 
-- [ ] **3. Request comparison and decision logging (Vertical Slice Complete)**
+- [x] **3. Request comparison and decision logging (Vertical Slice Complete)**
   Becomes usable: The right panel is fully operational: the developer pastes a client request, clicks "Compare", sees the assigned status pill (`IN_SCOPE`, `POSSIBLE_CHANGE`, `NEEDS_REVIEW`), matched item tags, plain-language rationale, and uncertainty note, and records `Accept`, `Reject`, or `Clarify` with an optional note, immediately streaming it into the History feed.
   Why now: Completes the full end-to-end core loop of ScopeLock—from baseline to request comparison to recorded human decision.
   PRD ref: `prd.md > 1. The Core Journey` (steps 4-6), `prd.md > 4.2 Comparison Engine`, `prd.md > 4.3 Human Decision Logging`
