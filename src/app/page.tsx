@@ -349,7 +349,7 @@ export default function WorkspacePage() {
       )}
 
       {/* Main Content Area: Only authenticated users with active projects enter workspace */}
-      {!isWorkspaceActive ? (
+      {!currentUser || !project ? (
         // Contribo-Inspired Hero State with Dimmed, Elegant Colors
         <main className="flex-1 flex flex-col items-center justify-center px-6 py-14 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
           {/* Eyebrow & Hero Title */}
@@ -395,25 +395,25 @@ export default function WorkspacePage() {
             </button>
           </div>
 
-          {/* Soft, Dimmed Pastel Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full pt-4">
+          {/* Soft, Dimmed Pastel Feature Cards - Centered Elements & Text */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center w-full pt-4">
             {/* Card 1: Soft Sky Tint */}
-            <div className="p-7 rounded-3xl bg-sky-50/70 border border-sky-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-sky-800 block">
+            <div className="p-7 rounded-3xl bg-sky-50/70 border border-sky-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between items-center text-center">
+              <div className="space-y-3 flex flex-col items-center text-center w-full">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-sky-800 block text-center">
                   DELIVERABLES
                 </span>
-                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight text-center">
                   Scope Anchor
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium text-center max-w-xs mx-auto">
                   Parse client emails into numbered deliverable cards. Lock baseline versions so expectations never shift silently.
                 </p>
               </div>
 
               {/* Inner white card */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
-                <div className="flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4 w-full flex flex-col items-center text-center">
+                <div className="flex items-center justify-center gap-2 w-full">
                   <span className="font-mono text-xs font-bold text-slate-900">
                     user-auth / v1.0
                   </span>
@@ -421,7 +421,7 @@ export default function WorkspacePage() {
                     ✓ Locked
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
                   <span className="px-2 py-0.5 rounded-full bg-slate-100 font-semibold">Policy v1</span>
                   <span className="px-2 py-0.5 rounded-full bg-slate-100 font-semibold">Terms frozen</span>
                 </div>
@@ -429,22 +429,22 @@ export default function WorkspacePage() {
             </div>
 
             {/* Card 2: Soft Terracotta/Amber Tint */}
-            <div className="p-7 rounded-3xl bg-amber-50/70 border border-amber-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-amber-900 block">
+            <div className="p-7 rounded-3xl bg-amber-50/70 border border-amber-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between items-center text-center">
+              <div className="space-y-3 flex flex-col items-center text-center w-full">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-amber-900 block text-center">
                   CREEP RADAR
                 </span>
-                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight text-center">
                   Comparison Engine
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium text-center max-w-xs mx-auto">
                   Deterministic token and concept overlap detects novel vendors (Twilio), platforms (Mobile), and third-party APIs without hallucination.
                 </p>
               </div>
 
               {/* Inner white card */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
-                <div className="flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4 w-full flex flex-col items-center text-center">
+                <div className="flex items-center justify-center gap-2 w-full">
                   <span className="font-mono text-xs font-bold text-amber-950">
                     Twilio SMS Receipts
                   </span>
@@ -452,29 +452,29 @@ export default function WorkspacePage() {
                     ⚠️ Change Order
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-600">
+                <p className="text-[11px] text-slate-600 text-center">
                   Novel vendor detected: Telephony / SMS outside v1.0 bounds
                 </p>
               </div>
             </div>
 
             {/* Card 3: Soft Lavender Tint */}
-            <div className="p-7 rounded-3xl bg-purple-50/70 border border-purple-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
-              <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-purple-900 block">
+            <div className="p-7 rounded-3xl bg-purple-50/70 border border-purple-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between items-center text-center">
+              <div className="space-y-3 flex flex-col items-center text-center w-full">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-purple-900 block text-center">
                   HUMAN AUTHORITY
                 </span>
-                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight text-center">
                   Audit & Diplomacy
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium text-center max-w-xs mx-auto">
                   Accept, reject, or clarify with full audit records. 1-click generate diplomatic, professional client replies ready for Slack.
                 </p>
               </div>
 
               {/* Inner white card */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
-                <div className="flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4 w-full flex flex-col items-center text-center">
+                <div className="flex items-center justify-center gap-2 w-full">
                   <span className="font-mono text-xs font-bold text-slate-900">
                     Client Reply Drafter
                   </span>
@@ -482,7 +482,7 @@ export default function WorkspacePage() {
                     1-Click Copy
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-600">
+                <p className="text-[11px] text-slate-600 text-center">
                   Polite Change Order proposal & Phase 2 deferral templates
                 </p>
               </div>
