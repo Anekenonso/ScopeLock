@@ -56,18 +56,18 @@ Build mode: fast
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: [to be recorded upon completion]
-Route and stops: [to be recorded upon completion]
-Edit outcome: [to be recorded upon completion]
-Reflection: [to be recorded upon completion]
-Activity mode: [to be recorded upon completion]
+Activity and evidence: Focused alternative connecting the learner's goal (directing and verifying an agent) to the Gate 1 Kill-Test execution in `tests/unit/comparator.test.ts`. Automated tests revealed initial tokenization gaps, which were fixed and verified with 100% passing results before UI integration.
+Route and stops: 1. `src/components/RequestInput.tsx` → 2. `src/lib/comparator/deterministic.ts` → 3. `src/lib/storage/repository.ts`.
+Edit outcome: Removed and disabled Next.js dev overlay indicators via `next.config.mjs` and `src/app/globals.css`.
+Reflection: Addressed through the practice of defining executable verification contracts (Vitest suites) before UI scaffolding.
+Activity mode: Live app and generated standalone companion map (`devpost/app-map.html`).
 
 ## Revisions
