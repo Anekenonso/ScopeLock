@@ -3,42 +3,118 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0B0F19;
-  --surface: #161E31;
-  --surface-border: rgba(255, 255, 255, 0.08);
-  --primary: #38BDF8;
-  --emerald: #10B981;
-  --amber: #F59E0B;
-  --rose: #F43F5E;
+  --ink: #070B14;
+  --ink-surface: #0E1526;
+  --ink-card: #131C31;
+  --ink-border: rgba(255, 255, 255, 0.08);
+  --ink-border-hover: rgba(255, 255, 255, 0.18);
+  --paper: #F8FAFC;
+  --brand: #38BDF8;
+  --terracotta: #F97316;
+  --lavender: #8B5CF6;
+  --mint: #10B981;
 }
 
 body {
-  background-color: var(--bg);
-  color: #F1F5F9;
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-jakarta), var(--font-inter), -apple-system, sans-serif;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 70%, rgba(139, 92, 246, 0.04) 0%, transparent 40%);
+  position: relative;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 20% 15%, rgba(56, 189, 248, 0.08), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 80% 25%, rgba(249, 115, 22, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 85%, rgba(139, 92, 246, 0.06), transparent 60%),
+    linear-gradient(to bottom, #070B14 0%, #0B101D 100%);
+  background-attachment: fixed;
+}
+
+/* Organic Floating Pastel Accent Blobs */
+.bg-blob-terracotta {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+}
+
+.bg-blob-lavender {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.14) 0%, transparent 70%);
+}
+
+.bg-blob-sky {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, transparent 70%);
+}
+
+/* Contribo-inspired Floating Header Pill */
+.floating-header {
+  background: rgba(14, 21, 38, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--ink-border);
+  box-shadow: 0 10px 35px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Fast, tactile card containers with extra rounded corners */
+.contribo-card {
+  background: rgba(19, 28, 49, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--ink-border);
+  border-radius: 1.5rem; /* rounded-3xl */
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contribo-card:hover {
+  background: rgba(24, 36, 63, 0.85);
+  border-color: var(--ink-border-hover);
+}
+
+/* Inner white/light pill cards */
+.inner-pill-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+}
+
+/* Navigation link underline micro-animation */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--brand);
+  border-radius: 9999px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease-out;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
 }
 
 /* Custom subtle scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(11, 15, 25, 0.6);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
 }
 
-/* Hide Next.js dev overlay button in development */
+/* Suppress Next.js dev overlay indicator */
 [data-nextjs-toast],
 [data-nextjs-dev-tools-button],
 nextjs-portal,
