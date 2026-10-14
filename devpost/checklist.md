@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Inspect the test report and verify that in-scope requests, out-of-scope additions (Twilio SMS, mobile app), and ambiguous cases evaluate exactly as specified.
   Commit: `Bootstrap project and verify comparison engine with 12 kill tests`
 
-- [ ] **2. Brief ingestion, parsing, and baseline approval**
+- [x] **2. Brief ingestion, parsing, and baseline approval**
   Becomes usable: A running web workspace where a developer can enter a project name, paste a client brief (or load realistic demo data), see it parsed into editable cards, add/edit/delete items, and click "Approve Baseline v1.0" to lock it into immutable storage.
   Why now: The approved baseline is the anchor for all downstream comparisons; without an approved baseline, incoming requests cannot be evaluated.
   PRD ref: `prd.md > 1. The Core Journey` (steps 1-3), `prd.md > 4.1 Brief Ingestion & Baseline Establishment`
@@ -51,7 +51,7 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — Slice 2 (Brief Ingestion & Baseline Approval verified in browser)
+- [x] Early usable behavior explored — Slice 2 (Brief Ingestion & Baseline Approval verified in browser)
 - [ ] Final kick-the-tires exploration and feedback completed — Slice 4 (Complete end-to-end testing of baseline bump, comparison, decision history, and export)
 
 ## Final Review
