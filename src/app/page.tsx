@@ -9,7 +9,9 @@ import { HistoryFeed } from "@/components/HistoryFeed";
 import { BriefIngestModal } from "@/components/BriefIngestModal";
 import { ResetConfirmModal } from "@/components/ResetConfirmModal";
 import { ClientResponseModal } from "@/components/ClientResponseModal";
+import { GithubAuthModal, GithubUser } from "@/components/GithubAuthModal";
 import { ToastContainer, ToastMessage } from "@/components/Toast";
+import { Footer } from "@/components/Footer";
 import { StorageRepository } from "@/lib/storage/repository";
 import { parseBriefIntoScopeItems } from "@/lib/parser/briefParser";
 import { createComparator } from "@/lib/comparator";
@@ -27,11 +29,11 @@ import {
   Sparkles,
   AlertCircle,
   ShieldCheck,
-  Zap,
   Lock,
   ArrowRight,
   ShieldAlert,
   MessageSquare,
+  Github,
 } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -40,6 +42,9 @@ export default function WorkspacePage() {
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+  const [isGithubModalOpen, setIsGithubModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<GithubUser | null>(null);
+
   const [isDraftMode, setIsDraftMode] = useState(false);
   const [draftItems, setDraftItems] = useState<ScopeItem[]>([]);
   const [activeBaseline, setActiveBaseline] = useState<BaselineVersion | null>(null);
@@ -60,8 +65,18 @@ export default function WorkspacePage() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Load project on mount
+  // Load project & user profile on mount
   useEffect(() => {
+    // Load GitHub User
+    try {
+      const storedUser = localStorage.getItem("scopelock_github_user");
+      if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+      }
+    } catch {
+      // Ignored
+    }
+
     const { project: loaded, isCorrupted: corrupted } = StorageRepository.getProject();
     if (corrupted) {
       setIsCorrupted(true);
@@ -76,6 +91,26 @@ export default function WorkspacePage() {
       }
     }
   }, []);
+
+  const handleSignInGithub = (user: GithubUser) => {
+    setCurrentUser(user);
+    try {
+      localStorage.setItem("scopelock_github_user", JSON.stringify(user));
+    } catch {
+      // Ignored
+    }
+    addToast("success", "Connected to GitHub", `Signed in as @${user.username}.`);
+  };
+
+  const handleSignOutGithub = () => {
+    setCurrentUser(null);
+    try {
+      localStorage.removeItem("scopelock_github_user");
+    } catch {
+      // Ignored
+    }
+    addToast("info", "Signed Out", "Disconnected from GitHub.");
+  };
 
   const handleCreateProjectWithBrief = (name: string, rawBrief: string) => {
     let proj = StorageRepository.createProject(name);
@@ -218,14 +253,12 @@ export default function WorkspacePage() {
 
   return (
     <div className="flex flex-col min-h-screen relative overflow-x-hidden">
-      {/* Background Organic Floating Blobs (Contribo-inspired) */}
-      <div className="fixed top-12 left-8 w-80 h-80 rounded-full bg-blob-sky pointer-events-none blur-2xl animate-floatBlob"></div>
-      <div className="fixed top-36 right-12 w-72 h-72 rounded-full bg-blob-terracotta pointer-events-none blur-2xl animate-floatBlob" style={{ animationDelay: "-4s" }}></div>
-      <div className="fixed bottom-12 left-1/3 w-96 h-96 rounded-full bg-blob-lavender pointer-events-none blur-3xl animate-floatBlob" style={{ animationDelay: "-8s" }}></div>
-
       <Header
         project={project}
         activeBaseline={activeBaseline}
+        currentUser={currentUser}
+        onOpenGithubAuth={() => setIsGithubModalOpen(true)}
+        onSignOutGithub={handleSignOutGithub}
         onExport={handleExportJson}
         onResetPrompt={() => setIsResetModalOpen(true)}
         onNewProjectPrompt={() => setIsBriefModalOpen(true)}
@@ -241,14 +274,14 @@ export default function WorkspacePage() {
 
       {/* Corrupted storage notification */}
       {isCorrupted && (
-        <div className="max-w-4xl mx-auto mt-4 px-6 py-2.5 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-between text-xs text-rose-300 font-mono">
+        <div className="max-w-4xl mx-auto mt-4 px-6 py-2.5 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-between text-xs text-rose-800 font-mono shadow-sm">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-400" />
+            <AlertCircle className="w-4 h-4 text-rose-600" />
             <span>Corrupted local storage detected. Reset recommended to restore clean state.</span>
           </div>
           <button
             onClick={() => setIsResetModalOpen(true)}
-            className="px-3 py-1 rounded-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 transition-colors"
+            className="px-3 py-1 rounded-full bg-rose-200 hover:bg-rose-300 text-rose-900 transition-colors font-bold"
           >
             Reset Now
           </button>
@@ -258,30 +291,30 @@ export default function WorkspacePage() {
       {/* Main Content Area */}
       {!project ? (
         // Contribo-Inspired Hero State
-        <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10 max-w-5xl mx-auto w-full text-center space-y-12">
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
           {/* Eyebrow & Hero Title */}
           <div className="space-y-4 max-w-3xl">
-            <span className="text-xs uppercase font-extrabold tracking-widest text-slate-400 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 inline-block">
+            <span className="text-xs uppercase font-extrabold tracking-widest text-slate-600 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm inline-block">
               Scope protection for software teams
             </span>
 
-            <h2 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-[1.08]">
+            <h2 className="text-4xl sm:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.08]">
               Agreed scope, <br />
-              <span className="bg-gradient-to-r from-sky-400 via-white to-terracotta-light bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-slate-950 via-sky-700 to-slate-900 bg-clip-text text-transparent">
                 finally locked.
               </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl mx-auto font-normal pt-2">
-              Turn unstructured client briefs into versioned baseline deliverables. Compare follow-up feature requests against approved scope to catch creep instantly.
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto font-normal pt-2">
+              Turn unstructured client briefs into versioned baseline deliverables. Compare follow-up feature requests against approved scope to catch creep before work expands.
             </p>
           </div>
 
           {/* Hero Action Pill Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-md mx-auto">
             <button
               onClick={() => setIsBriefModalOpen(true)}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-slate-950 font-extrabold text-sm hover:bg-slate-100 shadow-soft transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-slate-950 text-white font-extrabold text-sm hover:bg-slate-800 shadow-soft transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
               <span>Initialize from Brief</span>
@@ -295,76 +328,119 @@ export default function WorkspacePage() {
                 setIsDraftMode(false);
                 addToast("success", "Loaded SaaS Demo", "Acme SaaS Portal loaded with 8 deliverables.");
               }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-sm transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2 shadow-sm"
             >
               <Sparkles className="w-4 h-4 text-brand" />
               <span>Try Live Demo</span>
             </button>
           </div>
 
-          {/* Contribo-Style 3 Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left w-full pt-4">
-            {/* Card 1: Sky Tint */}
-            <div className="p-6 rounded-3xl bg-brand/5 border border-brand/20 space-y-4 hover:border-brand/40 transition-all hover:-translate-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-brand block">
-                Deliverables
-              </span>
-              <h3 className="text-xl font-extrabold text-white tracking-tight">
-                Scope Anchor
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Parse client emails into numbered deliverable cards. Lock baseline versions so expectations never shift silently.
-              </p>
-              <div className="pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-semibold text-slate-200">
-                  <Lock className="w-3 h-3 text-emerald-400" />
-                  <span>Versioned v1.0, v2.0</span>
+          {/* Contribo-Style 3 Feature Cards (Exact pastel tones from trycontribo.vercel.app) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full pt-4">
+            {/* Card 1: Blue / Sky Card (#D0E1ED) */}
+            <div
+              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
+              style={{ backgroundColor: "#D0E1ED" }}
+            >
+              <div className="space-y-3">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-slate-800 block">
+                  DELIVERABLES
                 </span>
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                  Scope Anchor
+                </h3>
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  Parse client emails into numbered deliverable cards. Lock baseline versions so expectations never shift silently.
+                </p>
+              </div>
+
+              {/* Inner white card like Contribo */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-slate-900">
+                    user-auth / v1.0
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                    ✓ Locked
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                  <span className="px-2 py-0.5 rounded-full bg-slate-100 font-semibold">Policy v1</span>
+                  <span className="px-2 py-0.5 rounded-full bg-slate-100 font-semibold">Terms frozen</span>
+                </div>
               </div>
             </div>
 
-            {/* Card 2: Terracotta Tint */}
-            <div className="p-6 rounded-3xl bg-terracotta/5 border border-terracotta/20 space-y-4 hover:border-terracotta/40 transition-all hover:-translate-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-terracotta block">
-                Creep Radar
-              </span>
-              <h3 className="text-xl font-extrabold text-white tracking-tight">
-                Comparison Engine
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Deterministic token and concept overlap detects novel vendors (Twilio), platforms (Mobile), and third-party APIs without hallucination.
-              </p>
-              <div className="pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-semibold text-slate-200">
-                  <ShieldAlert className="w-3 h-3 text-terracotta" />
-                  <span>Zero Hallucination</span>
+            {/* Card 2: Orange / Terracotta Card (#E59A55) */}
+            <div
+              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
+              style={{ backgroundColor: "#E59A55" }}
+            >
+              <div className="space-y-3">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-slate-900 block">
+                  CREEP RADAR
                 </span>
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                  Comparison Engine
+                </h3>
+                <p className="text-xs text-slate-900/90 leading-relaxed font-medium">
+                  Deterministic token and concept overlap detects novel vendors (Twilio), platforms (Mobile), and third-party APIs without hallucination.
+                </p>
+              </div>
+
+              {/* Inner white card like Contribo */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-orange-950">
+                    Twilio SMS Receipts
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-800">
+                    ⚠️ Change Order
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600">
+                  Novel vendor detected: Telephony / SMS outside v1.0 bounds
+                </p>
               </div>
             </div>
 
-            {/* Card 3: Lavender Tint */}
-            <div className="p-6 rounded-3xl bg-lavender/5 border border-lavender/20 space-y-4 hover:border-lavender/40 transition-all hover:-translate-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-lavender block">
-                Human Authority
-              </span>
-              <h3 className="text-xl font-extrabold text-white tracking-tight">
-                Audit & Diplomacy
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Accept, reject, or clarify with full audit records. 1-click generate diplomatic, professional client replies ready for Slack.
-              </p>
-              <div className="pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-semibold text-slate-200">
-                  <MessageSquare className="w-3 h-3 text-lavender" />
-                  <span>Client Reply Drafter</span>
+            {/* Card 3: Purple / Lavender Card (#C8B6E2) */}
+            <div
+              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
+              style={{ backgroundColor: "#C8B6E2" }}
+            >
+              <div className="space-y-3">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-purple-950 block">
+                  HUMAN AUTHORITY
                 </span>
+                <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+                  Audit & Diplomacy
+                </h3>
+                <p className="text-xs text-purple-950/90 leading-relaxed font-medium">
+                  Accept, reject, or clarify with full audit records. 1-click generate diplomatic, professional client replies ready for Slack.
+                </p>
+              </div>
+
+              {/* Inner white card like Contribo */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-slate-900">
+                    Client Reply Drafter
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                    1-Click Copy
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600">
+                  Polite Change Order proposal & Phase 2 deferral templates
+                </p>
               </div>
             </div>
           </div>
         </main>
       ) : (
         // Split-View Workspace
-        <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100vh-68px)] relative z-10 mt-2">
+        <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100vh-68px)] relative z-10 mt-2 bg-slate-50/50">
           {/* Left Panel: Scope Anchor */}
           <section className="md:col-span-5 h-full overflow-hidden">
             <BaselinePanel
@@ -386,7 +462,7 @@ export default function WorkspacePage() {
           </section>
 
           {/* Right Panel: Request Evaluation & Decision Audit */}
-          <section className="md:col-span-7 h-full overflow-y-auto p-5 space-y-5 bg-ink/40">
+          <section className="md:col-span-7 h-full overflow-y-auto p-6 space-y-6 bg-slate-100/60">
             {/* 1. Request Input */}
             <RequestInput
               onCompare={handleCompareRequest}
@@ -395,8 +471,8 @@ export default function WorkspacePage() {
 
             {/* In Draft Mode Warning */}
             {isDraftMode && (
-              <div className="p-4 rounded-2xl bg-terracotta-soft border border-terracotta/30 text-terracotta-light text-xs flex items-center gap-2.5 font-medium">
-                <AlertCircle className="w-4 h-4 text-terracotta flex-shrink-0" />
+              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5 font-bold shadow-sm">
+                <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
                 <span>
                   Baseline is in draft mode. Click &ldquo;Lock Baseline&rdquo; on the left to activate the comparison engine.
                 </span>
@@ -424,6 +500,9 @@ export default function WorkspacePage() {
         </main>
       )}
 
+      {/* Footer */}
+      {!project && <Footer />}
+
       {/* Modals */}
       <BriefIngestModal
         isOpen={isBriefModalOpen}
@@ -435,6 +514,12 @@ export default function WorkspacePage() {
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
         onConfirmReset={handleConfirmReset}
+      />
+
+      <GithubAuthModal
+        isOpen={isGithubModalOpen}
+        onClose={() => setIsGithubModalOpen(false)}
+        onSuccess={handleSignInGithub}
       />
 
       {comparisonResult && activeBaseline && (

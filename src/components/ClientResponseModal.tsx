@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, X, Mail, Sparkles, Send } from "lucide-react";
-import { ComparisonResult, ScopeItem, BaselineVersion } from "@/types";
+import { Copy, Check, X, Mail, Sparkles } from "lucide-react";
+import { ComparisonResult, BaselineVersion } from "@/types";
 
 interface ClientResponseModalProps {
   isOpen: boolean;
@@ -72,7 +72,6 @@ Could you clarify the specific user flow or requirements so we can make sure we'
       onCopied();
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement("textarea");
       textarea.value = textToCopy;
       document.body.appendChild(textarea);
@@ -86,26 +85,26 @@ Could you clarify the specific user flow or requirements so we can make sure we'
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="w-full max-w-xl bg-surface border border-surface-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-floating overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between bg-surface-elevated/40">
+        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-brand/10 border border-brand/30 flex items-center justify-center text-brand">
+            <div className="w-8 h-8 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center text-sky-700">
               <Mail className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">
+              <h3 className="text-sm font-extrabold text-slate-950 tracking-tight">
                 Client Response Drafter
               </h3>
-              <p className="text-[11px] text-slate-400">
-                Professional, diplomatic scope boundary copy ready to send
+              <p className="text-xs text-slate-500">
+                Diplomatic scope boundary copy ready to paste into Slack or Email
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-md transition-colors"
+            className="text-slate-400 hover:text-slate-700 p-1 rounded-full transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -114,17 +113,17 @@ Could you clarify the specific user flow or requirements so we can make sure we'
         {/* Template Selector Pills */}
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Style:
             </span>
             <div className="grid grid-cols-3 gap-1.5 flex-1">
               <button
                 type="button"
                 onClick={() => setTemplateType("change_order")}
-                className={`text-xs py-1.5 px-2.5 rounded-lg border font-medium transition-all ${
+                className={`text-xs py-1.5 px-3 rounded-full border font-bold transition-all ${
                   templateType === "change_order"
-                    ? "bg-brand/15 text-brand border-brand/40 shadow-sm"
-                    : "bg-canvas text-slate-400 border-surface-border hover:text-slate-200"
+                    ? "bg-slate-950 text-white border-slate-950 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900"
                 }`}
               >
                 Change Order
@@ -132,10 +131,10 @@ Could you clarify the specific user flow or requirements so we can make sure we'
               <button
                 type="button"
                 onClick={() => setTemplateType("deferral")}
-                className={`text-xs py-1.5 px-2.5 rounded-lg border font-medium transition-all ${
+                className={`text-xs py-1.5 px-3 rounded-full border font-bold transition-all ${
                   templateType === "deferral"
-                    ? "bg-brand/15 text-brand border-brand/40 shadow-sm"
-                    : "bg-canvas text-slate-400 border-surface-border hover:text-slate-200"
+                    ? "bg-slate-950 text-white border-slate-950 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900"
                 }`}
               >
                 Defer to Phase 2
@@ -143,10 +142,10 @@ Could you clarify the specific user flow or requirements so we can make sure we'
               <button
                 type="button"
                 onClick={() => setTemplateType("clarification")}
-                className={`text-xs py-1.5 px-2.5 rounded-lg border font-medium transition-all ${
+                className={`text-xs py-1.5 px-3 rounded-full border font-bold transition-all ${
                   templateType === "clarification"
-                    ? "bg-brand/15 text-brand border-brand/40 shadow-sm"
-                    : "bg-canvas text-slate-400 border-surface-border hover:text-slate-200"
+                    ? "bg-slate-950 text-white border-slate-950 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900"
                 }`}
               >
                 Ask Clarification
@@ -160,14 +159,14 @@ Could you clarify the specific user flow or requirements so we can make sure we'
               readOnly
               rows={9}
               value={textToCopy}
-              className="w-full p-4 rounded-xl bg-canvas border border-surface-border text-slate-200 text-xs font-sans leading-relaxed resize-none focus:outline-none"
+              className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs font-sans leading-relaxed resize-none focus:outline-none"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-2 border-t border-surface-border">
-            <span className="text-[11px] font-mono text-slate-500 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-brand" />
+          <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+            <span className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+              <Sparkles className="w-3.5 h-3.5 text-brand" />
               Tailored to {baseline.versionNumber} evidence
             </span>
 
@@ -175,7 +174,7 @@ Could you clarify the specific user flow or requirements so we can make sure we'
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 text-xs font-medium transition-colors"
+                className="px-4 py-2 rounded-full text-slate-500 hover:text-slate-900 text-xs font-bold transition-colors"
               >
                 Close
               </button>
@@ -183,7 +182,7 @@ Could you clarify the specific user flow or requirements so we can make sure we'
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand hover:bg-sky-400 text-slate-950 font-bold text-xs shadow-glow-brand transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-6 py-2 rounded-full bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs shadow-sm transition-all active:scale-98"
               >
                 {copied ? (
                   <>

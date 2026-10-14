@@ -44,41 +44,41 @@ function ToastItem({
   const getIcon = () => {
     switch (toast.type) {
       case "success":
-        return <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />;
+        return <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />;
       case "warning":
-        return <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />;
+        return <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />;
       case "info":
-        return <Info className="w-4 h-4 text-brand flex-shrink-0" />;
+        return <Info className="w-4 h-4 text-sky-600 flex-shrink-0" />;
     }
   };
 
   const getBorderColor = () => {
     switch (toast.type) {
       case "success":
-        return "border-emerald-500/30 bg-surface/90 shadow-glow-emerald";
+        return "border-emerald-200 bg-white shadow-floating";
       case "warning":
-        return "border-amber-500/30 bg-surface/90 shadow-glow-amber";
+        return "border-amber-200 bg-white shadow-floating";
       case "info":
-        return "border-brand/30 bg-surface/90 shadow-glow-brand";
+        return "border-sky-200 bg-white shadow-floating";
     }
   };
 
   return (
     <div
-      className={`pointer-events-auto flex items-start justify-between gap-3 p-3.5 rounded-xl border backdrop-blur-xl shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-3 ${getBorderColor()}`}
+      className={`pointer-events-auto flex items-start justify-between gap-3 p-4 rounded-2xl border shadow-floating transition-all duration-300 animate-in slide-in-from-bottom-3 ${getBorderColor()}`}
     >
       <div className="flex items-start gap-2.5">
         <div className="mt-0.5">{getIcon()}</div>
         <div>
-          <h4 className="text-xs font-semibold text-white tracking-tight">{toast.title}</h4>
+          <h4 className="text-xs font-bold text-slate-900 tracking-tight">{toast.title}</h4>
           {toast.description && (
-            <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{toast.description}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">{toast.description}</p>
           )}
         </div>
       </div>
       <button
         onClick={() => onDismiss(toast.id)}
-        className="text-slate-500 hover:text-slate-300 p-0.5 transition-colors"
+        className="text-slate-400 hover:text-slate-700 p-0.5 transition-colors"
       >
         <X className="w-3.5 h-3.5" />
       </button>

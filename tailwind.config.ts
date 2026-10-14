@@ -9,37 +9,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        canvas: {
+          DEFAULT: "#F4F5F7", // Contribo exact body background
+          subtle: "#ECEEF2",
+        },
         ink: {
-          DEFAULT: "#070B14",
-          card: "#0E1526",
-          surface: "#131C31",
-          elevated: "#18243F",
-          border: "rgba(255, 255, 255, 0.08)",
-          borderHover: "rgba(255, 255, 255, 0.18)",
+          DEFAULT: "#0A0A0A", // Contribo exact text color
+          muted: "#475569",
+          faint: "#94A3B8",
         },
-        paper: "#F8FAFC",
-        terracotta: {
-          DEFAULT: "#F97316",
-          light: "#FB923C",
-          dark: "#EA580C",
-          soft: "rgba(249, 115, 22, 0.14)",
+        surface: {
+          DEFAULT: "#FFFFFF",
+          elevated: "#F8FAFC",
+          card: "#FFFFFF",
+          border: "#E2E8F0",
+          borderHover: "#CBD5E1",
         },
-        lavender: {
-          DEFAULT: "#8B5CF6",
-          light: "#A78BFA",
-          dark: "#7C3AED",
-          soft: "rgba(139, 92, 246, 0.14)",
+        contribo: {
+          sky: "#D0E1ED",       // Contribo blue feature card
+          terracotta: "#E59A55", // Contribo orange feature card
+          lavender: "#C8B6E2",   // Contribo purple feature card
         },
         brand: {
-          DEFAULT: "#38BDF8",
-          light: "#7DD3FC",
-          dark: "#0284C7",
-          soft: "rgba(56, 189, 248, 0.14)",
+          DEFAULT: "#0284C7",
+          light: "#38BDF8",
+          dark: "#0369A1",
+          soft: "#E0F2FE",
         },
         status: {
-          inScope: "#10B981",
-          possibleChange: "#F43F5E",
-          needsReview: "#F59E0B",
+          inScope: "#059669",
+          possibleChange: "#EA580C",
+          needsReview: "#D97706",
         },
       },
       fontFamily: {
@@ -47,24 +47,13 @@ const config: Config = {
         mono: ["var(--font-jetbrains)", "monospace"],
       },
       borderRadius: {
+        "3xl": "1.5rem",
         "4xl": "2rem",
       },
       boxShadow: {
-        soft: "0 10px 30px -10px rgba(0, 0, 0, 0.4)",
-        floating: "0 20px 45px -15px rgba(0, 0, 0, 0.6)",
-        "glow-brand": "0 0 25px -4px rgba(56, 189, 248, 0.25)",
-        "glow-emerald": "0 0 25px -4px rgba(16, 185, 129, 0.25)",
-        "glow-rose": "0 0 25px -4px rgba(244, 63, 94, 0.25)",
-        "glow-terracotta": "0 0 25px -4px rgba(249, 115, 22, 0.25)",
-      },
-      keyframes: {
-        floatBlob: {
-          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
-          "50%": { transform: "translate(15px, -20px) scale(1.05)" },
-        },
-      },
-      animation: {
-        floatBlob: "floatBlob 12s ease-in-out infinite",
+        soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)",
+        floating: "0 12px 35px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04)",
+        card: "0 1px 3px rgba(0,0,0,0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.04)",
       },
     },
   },
