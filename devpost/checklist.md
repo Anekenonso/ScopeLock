@@ -52,7 +52,7 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — Slice 2 (Brief Ingestion & Baseline Approval verified in browser)
-- [ ] Final kick-the-tires exploration and feedback completed — Slice 4 (Complete end-to-end testing of baseline bump, comparison, decision history, and export)
+- [x] Final kick-the-tires exploration and feedback completed — Slice 4 (Complete end-to-end testing of baseline bump, comparison, decision history, and export)
 
 ## Final Review
 
