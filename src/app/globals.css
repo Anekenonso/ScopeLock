@@ -37,3 +37,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* Hide Next.js dev overlay button in development */
+[data-nextjs-toast],
+[data-nextjs-dev-tools-button],
+nextjs-portal,
+#nextjs-dev-tools,
+div[data-nextjs-dialog-overlay] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
