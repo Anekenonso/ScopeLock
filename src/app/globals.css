@@ -3,14 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --bg-canvas: #F4F5F7;
+  --bg-canvas: #F8F9FB;
   --text-ink: #0A0A0A;
   --surface-white: #FFFFFF;
   --border-light: #E2E8F0;
   --border-hover: #CBD5E1;
-  --contribo-sky: #D0E1ED;
-  --contribo-terracotta: #E59A55;
-  --contribo-lavender: #C8B6E2;
 }
 
 body {
@@ -20,20 +17,21 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  /* Very faint, dimmed ambient washes that never overpower text or buttons */
   background-image:
-    radial-gradient(ellipse 50% 35% at 15% 10%, rgba(208, 225, 237, 0.45), transparent 60%),
-    radial-gradient(ellipse 45% 30% at 85% 15%, rgba(229, 154, 85, 0.3), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 50% 90%, rgba(200, 182, 226, 0.35), transparent 60%);
+    radial-gradient(ellipse 45% 30% at 15% 10%, rgba(208, 225, 237, 0.18), transparent 60%),
+    radial-gradient(ellipse 40% 25% at 85% 15%, rgba(229, 154, 85, 0.12), transparent 60%),
+    radial-gradient(ellipse 45% 30% at 50% 90%, rgba(200, 182, 226, 0.14), transparent 60%);
   background-attachment: fixed;
 }
 
 /* Floating pill navbar */
 .floating-header {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-light);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 16px -2px rgba(0, 0, 0, 0.04);
 }
 
 /* Contribo-styled crisp white cards with rounded corners */
@@ -41,7 +39,7 @@ body {
   background: #FFFFFF;
   border: 1px solid var(--border-light);
   border-radius: 1.5rem; /* rounded-3xl */
-  box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03), 0 6px 20px -4px rgba(0, 0, 0, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

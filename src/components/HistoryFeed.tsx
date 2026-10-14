@@ -113,53 +113,94 @@ export function HistoryFeed({ decisions }: HistoryFeedProps) {
 
   return (
     <div className="contribo-card p-6 space-y-4 shadow-card">
-      {/* Feed Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2.5">
+      {/* Top Header Row */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-brand" />
           <h3 className="text-xs uppercase tracking-wider text-slate-900 font-extrabold">
-            Decision Audit Timeline ({decisions.length})
+            Decision Audit Timeline
           </h3>
+          <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+            {decisions.length}
+          </span>
         </div>
 
-        {/* Filter buttons as Contribo rounded-full pills */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {(["ALL", "IN_SCOPE", "POSSIBLE_CHANGE", "NEEDS_REVIEW"] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`text-xs px-3.5 py-1 rounded-full transition-all flex items-center gap-1.5 font-bold ${
-                filter === f
-                  ? "bg-slate-950 text-white shadow-sm scale-102"
-                  : "bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200 border border-slate-200/80"
-              }`}
-            >
-              <span>{f === "ALL" ? "All" : f.replace("_", " ")}</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                  filter === f ? "bg-slate-800 text-white" : "bg-slate-200 text-slate-700"
-                }`}
-              >
-                {countByStatus[f]}
-              </span>
-            </button>
-          ))}
-        </div>
+        {decisions.length > 3 && (
+          <div className="relative w-48">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Filter decisions..."
+              className="w-full pl-8 pr-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand"
+            />
+          </div>
+        )}
       </div>
 
-      {/* Pill Search if more than 3 decisions */}
-      {decisions.length > 3 && (
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-2.5" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search decisions by request, rationale, or notes..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand transition-colors"
-          />
-        </div>
-      )}
+      {/* Symmetrical, perfectly aligned filter grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <button
+          type="button"
+          onClick={() => setFilter("ALL")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+            filter === "ALL"
+              ? "bg-slate-950 text-white shadow-sm"
+              : "bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200 border border-slate-200/80"
+          }`}
+        >
+          <span>All</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${filter === "ALL" ? "bg-slate-800 text-white" : "bg-slate-200 text-slate-700"}`}>
+            {countByStatus.ALL}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("IN_SCOPE")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+            filter === "IN_SCOPE"
+              ? "bg-emerald-600 text-white shadow-sm"
+              : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200/80"
+          }`}
+        >
+          <span>In Scope</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${filter === "IN_SCOPE" ? "bg-emerald-800 text-white" : "bg-emerald-100 text-emerald-900"}`}>
+            {countByStatus.IN_SCOPE}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("POSSIBLE_CHANGE")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+            filter === "POSSIBLE_CHANGE"
+              ? "bg-orange-600 text-white shadow-sm"
+              : "bg-orange-50 text-orange-800 hover:bg-orange-100 border border-orange-200/80"
+          }`}
+        >
+          <span>Scope Creep</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${filter === "POSSIBLE_CHANGE" ? "bg-orange-800 text-white" : "bg-orange-100 text-orange-900"}`}>
+            {countByStatus.POSSIBLE_CHANGE}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("NEEDS_REVIEW")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+            filter === "NEEDS_REVIEW"
+              ? "bg-amber-600 text-white shadow-sm"
+              : "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/80"
+          }`}
+        >
+          <span>Needs Review</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${filter === "NEEDS_REVIEW" ? "bg-amber-800 text-white" : "bg-amber-100 text-amber-900"}`}>
+            {countByStatus.NEEDS_REVIEW}
+          </span>
+        </button>
+      </div>
 
       {/* Decision List */}
       <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">

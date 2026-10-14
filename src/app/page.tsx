@@ -30,10 +30,8 @@ import {
   AlertCircle,
   ShieldCheck,
   Lock,
-  ArrowRight,
   ShieldAlert,
   MessageSquare,
-  Github,
 } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -67,7 +65,6 @@ export default function WorkspacePage() {
 
   // Load project & user profile on mount
   useEffect(() => {
-    // Load GitHub User
     try {
       const storedUser = localStorage.getItem("scopelock_github_user");
       if (storedUser) {
@@ -290,8 +287,8 @@ export default function WorkspacePage() {
 
       {/* Main Content Area */}
       {!project ? (
-        // Contribo-Inspired Hero State
-        <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
+        // Contribo-Inspired Hero State with Dimmed, Elegant Colors
+        <main className="flex-1 flex flex-col items-center justify-center px-6 py-14 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
           {/* Eyebrow & Hero Title */}
           <div className="space-y-4 max-w-3xl">
             <span className="text-xs uppercase font-extrabold tracking-widest text-slate-600 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm inline-block">
@@ -300,7 +297,7 @@ export default function WorkspacePage() {
 
             <h2 className="text-4xl sm:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.08]">
               Agreed scope, <br />
-              <span className="bg-gradient-to-r from-slate-950 via-sky-700 to-slate-900 bg-clip-text text-transparent">
+              <span className="text-brand">
                 finally locked.
               </span>
             </h2>
@@ -335,27 +332,24 @@ export default function WorkspacePage() {
             </button>
           </div>
 
-          {/* Contribo-Style 3 Feature Cards (Exact pastel tones from trycontribo.vercel.app) */}
+          {/* Soft, Dimmed Pastel Feature Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full pt-4">
-            {/* Card 1: Blue / Sky Card (#D0E1ED) */}
-            <div
-              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
-              style={{ backgroundColor: "#D0E1ED" }}
-            >
+            {/* Card 1: Soft Sky Tint */}
+            <div className="p-7 rounded-3xl bg-sky-50/70 border border-sky-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
               <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-slate-800 block">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-sky-800 block">
                   DELIVERABLES
                 </span>
                 <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
                   Scope Anchor
                 </h3>
-                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
                   Parse client emails into numbered deliverable cards. Lock baseline versions so expectations never shift silently.
                 </p>
               </div>
 
-              {/* Inner white card like Contribo */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+              {/* Inner white card */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs font-bold text-slate-900">
                     user-auth / v1.0
@@ -371,27 +365,24 @@ export default function WorkspacePage() {
               </div>
             </div>
 
-            {/* Card 2: Orange / Terracotta Card (#E59A55) */}
-            <div
-              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
-              style={{ backgroundColor: "#E59A55" }}
-            >
+            {/* Card 2: Soft Terracotta/Amber Tint */}
+            <div className="p-7 rounded-3xl bg-amber-50/70 border border-amber-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
               <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-slate-900 block">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-amber-900 block">
                   CREEP RADAR
                 </span>
                 <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
                   Comparison Engine
                 </h3>
-                <p className="text-xs text-slate-900/90 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
                   Deterministic token and concept overlap detects novel vendors (Twilio), platforms (Mobile), and third-party APIs without hallucination.
                 </p>
               </div>
 
-              {/* Inner white card like Contribo */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+              {/* Inner white card */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-orange-950">
+                  <span className="font-mono text-xs font-bold text-amber-950">
                     Twilio SMS Receipts
                   </span>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-800">
@@ -404,25 +395,22 @@ export default function WorkspacePage() {
               </div>
             </div>
 
-            {/* Card 3: Purple / Lavender Card (#C8B6E2) */}
-            <div
-              className="p-7 rounded-3xl space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between"
-              style={{ backgroundColor: "#C8B6E2" }}
-            >
+            {/* Card 3: Soft Lavender Tint */}
+            <div className="p-7 rounded-3xl bg-purple-50/70 border border-purple-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between">
               <div className="space-y-3">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-purple-950 block">
+                <span className="text-xs uppercase font-extrabold tracking-wider text-purple-900 block">
                   HUMAN AUTHORITY
                 </span>
                 <h3 className="text-2xl font-extrabold text-slate-950 tracking-tight">
                   Audit & Diplomacy
                 </h3>
-                <p className="text-xs text-purple-950/90 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
                   Accept, reject, or clarify with full audit records. 1-click generate diplomatic, professional client replies ready for Slack.
                 </p>
               </div>
 
-              {/* Inner white card like Contribo */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm space-y-2 mt-4">
+              {/* Inner white card */}
+              <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-2 mt-4">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs font-bold text-slate-900">
                     Client Reply Drafter
@@ -462,7 +450,7 @@ export default function WorkspacePage() {
           </section>
 
           {/* Right Panel: Request Evaluation & Decision Audit */}
-          <section className="md:col-span-7 h-full overflow-y-auto p-6 space-y-6 bg-slate-100/60">
+          <section className="md:col-span-7 h-full overflow-y-auto p-6 space-y-6 bg-slate-100/50">
             {/* 1. Request Input */}
             <RequestInput
               onCompare={handleCompareRequest}
