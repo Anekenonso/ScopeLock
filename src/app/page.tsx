@@ -85,29 +85,31 @@ export default function WorkspacePage() {
     return true;
   };
 
-  // Load project & user profile on mount
+  // Load project & user profile on mount - only restore workspace if authenticated
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem("scopelock_github_user");
       if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setCurrentUser(parsedUser);
+
+        // Only mount project into active portal if authenticated session exists
+        const { project: loaded, isCorrupted: corrupted } = StorageRepository.getProject();
+        if (corrupted) {
+          setIsCorrupted(true);
+          addToast("warning", "Corrupted storage detected", "Reset is recommended to restore a clean state.");
+        } else if (loaded) {
+          setProject(loaded);
+          const active = loaded.baselines.find((b) => b.id === loaded.activeBaselineId) || null;
+          setActiveBaseline(active);
+          if (loaded.baselines.length === 0) {
+            setIsDraftMode(true);
+            setDraftItems(loaded.draftItems || []);
+          }
+        }
       }
     } catch {
       // Ignored
-    }
-
-    const { project: loaded, isCorrupted: corrupted } = StorageRepository.getProject();
-    if (corrupted) {
-      setIsCorrupted(true);
-      addToast("warning", "Corrupted storage detected", "Reset is recommended to restore a clean state.");
-    } else if (loaded) {
-      setProject(loaded);
-      const active = loaded.baselines.find((b) => b.id === loaded.activeBaselineId) || null;
-      setActiveBaseline(active);
-      if (loaded.baselines.length === 0) {
-        setIsDraftMode(true);
-        setDraftItems(loaded.draftItems || []);
-      }
     }
   }, []);
 
@@ -119,6 +121,22 @@ export default function WorkspacePage() {
       // Ignored
     }
     addToast("success", "Connected to GitHub", `Signed in as @${user.username}.`);
+
+    // If there is a stored project in storage and not yet loaded into memory, restore it
+    let currentProj = project;
+    if (!currentProj) {
+      const { project: loaded } = StorageRepository.getProject();
+      if (loaded) {
+        currentProj = loaded;
+        setProject(loaded);
+        const active = loaded.baselines.find((b) => b.id === loaded.activeBaselineId) || null;
+        setActiveBaseline(active);
+        if (loaded.baselines.length === 0) {
+          setIsDraftMode(true);
+          setDraftItems(loaded.draftItems || []);
+        }
+      }
+    }
 
     // Automatically execute the action that triggered the login modal
     if (pendingAction === "brief") {
@@ -137,13 +155,18 @@ export default function WorkspacePage() {
   };
 
   const handleSignOutGithub = () => {
+    // Immediately terminate session and lock the portal workspace
     setCurrentUser(null);
+    setComparisonResult(null);
+    setCurrentRequestText("");
+    setIsClientModalOpen(false);
+    setIsBriefModalOpen(false);
     try {
       localStorage.removeItem("scopelock_github_user");
     } catch {
       // Ignored
     }
-    addToast("info", "Signed Out", "Disconnected from GitHub.");
+    addToast("info", "Signed Out & Workspace Locked", "Session terminated. Workspace has been secured.");
   };
 
   const handleCreateProjectWithBrief = (name: string, rawBrief: string) => {
@@ -285,11 +308,14 @@ export default function WorkspacePage() {
     addToast("info", "Workspace Reset", "All local state has been cleared.");
   };
 
+  // Only grant portal access if user has an authenticated session AND an active project
+  const isWorkspaceActive = Boolean(currentUser && project);
+
   return (
     <div className="flex flex-col min-h-screen relative overflow-x-hidden">
       <Header
-        project={project}
-        activeBaseline={activeBaseline}
+        project={isWorkspaceActive ? project : null}
+        activeBaseline={isWorkspaceActive ? activeBaseline : null}
         currentUser={currentUser}
         onOpenGithubAuth={() => setIsGithubModalOpen(true)}
         onSignOutGithub={handleSignOutGithub}
@@ -322,8 +348,8 @@ export default function WorkspacePage() {
         </div>
       )}
 
-      {/* Main Content Area */}
-      {!project ? (
+      {/* Main Content Area: Only authenticated users with active projects enter workspace */}
+      {!isWorkspaceActive ? (
         // Contribo-Inspired Hero State with Dimmed, Elegant Colors
         <main className="flex-1 flex flex-col items-center justify-center px-6 py-14 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
           {/* Eyebrow & Hero Title */}
@@ -526,7 +552,7 @@ export default function WorkspacePage() {
       )}
 
       {/* Footer */}
-      {!project && <Footer />}
+      {!isWorkspaceActive && <Footer />}
 
       {/* Modals */}
       <BriefIngestModal
