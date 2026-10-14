@@ -108,7 +108,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-          <p>© 2026 ScopeLock. Built for Devpost Build With AI: Basics.</p>
+          <p>© 2026 ScopeLock. All rights reserved</p>
           <div className="flex items-center gap-3 text-slate-500">
             <span>Zero Cloud Leaks</span>
             <span>•</span>
