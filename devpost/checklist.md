@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. Bootstrap project and verify comparison engine with 12 kill-tests**
+- [x] **1. Bootstrap project and verify comparison engine with 12 kill-tests**
   Becomes usable: A running Next.js/TypeScript/Tailwind project with an automated Vitest test suite executing all 12 synthetic kill-test cases against the pure deterministic `ScopeComparator` engine.
   Why now: Proves the unique kernel and riskiest assumption first before building any UI scaffolding, ensuring the classification logic is bulletproof.
   PRD ref: `prd.md > 4.2 Comparison Engine`, `prd.md > 7. What We're Building`
