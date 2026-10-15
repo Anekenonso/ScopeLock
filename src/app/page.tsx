@@ -354,33 +354,33 @@ export default function WorkspacePage() {
       {/* Main Content Area: Only authenticated users with active projects enter workspace */}
       {!currentUser || !project ? (
         // Contribo-Inspired Hero State with Dimmed, Elegant Colors
-        <main className="flex-1 flex flex-col items-center justify-center px-6 py-14 relative z-10 max-w-6xl mx-auto w-full text-center space-y-12">
+        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-14 relative z-10 max-w-6xl mx-auto w-full text-center space-y-8 sm:space-y-12">
           {/* Eyebrow & Hero Title */}
-          <div className="space-y-4 max-w-3xl">
-            <span className="text-xs uppercase font-extrabold tracking-widest text-slate-600 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm inline-block">
+          <div className="space-y-3 sm:space-y-4 max-w-3xl">
+            <span className="text-[11px] sm:text-xs uppercase font-extrabold tracking-widest text-slate-600 px-3.5 sm:px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm inline-block">
               Scope protection for software teams
             </span>
 
-            <h2 className="text-4xl sm:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.08]">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.1]">
               Agreed scope, <br />
               <span className="text-brand">
                 finally locked.
               </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto font-normal pt-2">
+            <p className="text-xs sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto font-normal pt-1 sm:pt-2 px-2">
               Turn unstructured client briefs into versioned baseline deliverables. Compare follow-up feature requests against approved scope to catch creep before work expands.
             </p>
           </div>
 
           {/* Hero Action Pill Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto px-2">
             <button
               onClick={() => {
                 if (!requireAuthFor("brief", "Initialize from Brief")) return;
                 setIsBriefModalOpen(true);
               }}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-slate-950 text-white font-extrabold text-sm hover:bg-slate-800 shadow-soft transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-slate-950 text-white font-extrabold text-xs sm:text-sm hover:bg-slate-800 shadow-soft transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
               <span>Initialize from Brief</span>
@@ -391,7 +391,7 @@ export default function WorkspacePage() {
                 if (!requireAuthFor("demo", "Try Live Demo")) return;
                 handleLoadDemoProject();
               }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-sm transition-all hover:scale-103 active:scale-98 flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm"
             >
               <Sparkles className="w-4 h-4 text-brand" />
               <span>Try Live Demo</span>
@@ -399,9 +399,9 @@ export default function WorkspacePage() {
           </div>
 
           {/* Soft, Dimmed Pastel Feature Cards - Centered Elements & Text */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center w-full pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center w-full pt-2 sm:pt-4">
             {/* Card 1: Soft Sky Tint */}
-            <div className="p-7 rounded-3xl bg-sky-50/70 border border-sky-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between items-center text-center">
+            <div className="p-5 sm:p-7 rounded-3xl bg-sky-50/70 border border-sky-100 space-y-4 hover:shadow-floating transition-all hover:-translate-y-1 flex flex-col justify-between items-center text-center">
               <div className="space-y-3 flex flex-col items-center text-center w-full">
                 <span className="text-xs uppercase font-extrabold tracking-wider text-sky-800 block text-center">
                   DELIVERABLES
@@ -496,15 +496,15 @@ export default function WorkspacePage() {
         // Split-View Workspace
         <div className="flex-1 flex flex-col overflow-hidden relative z-10 bg-slate-50/50">
           {/* Mobile Segmented Switcher (< md) */}
-          <div className="md:hidden flex items-center justify-center px-4 py-2 bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-16 z-20">
+          <div className="md:hidden flex items-center justify-center px-3 py-1.5 bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-14 z-20">
             <div className="flex items-center p-1 bg-slate-100 rounded-full w-full max-w-sm border border-slate-200 shadow-sm">
               <button
                 type="button"
                 onClick={() => setMobileTab("deliverables")}
-                className={`flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 ${
                   mobileTab === "deliverables"
                     ? "bg-white text-slate-950 shadow-sm"
-                    : "text-slate-600 hover:text-slate-950"
+                    : "text-slate-600 hover:text-slate-950 active:scale-95"
                 }`}
               >
                 <Lock className="w-3.5 h-3.5 text-brand" />
@@ -513,10 +513,10 @@ export default function WorkspacePage() {
               <button
                 type="button"
                 onClick={() => setMobileTab("radar")}
-                className={`flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 ${
                   mobileTab === "radar"
                     ? "bg-white text-slate-950 shadow-sm"
-                    : "text-slate-600 hover:text-slate-950"
+                    : "text-slate-600 hover:text-slate-950 active:scale-95"
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-brand" />
@@ -528,7 +528,7 @@ export default function WorkspacePage() {
             </div>
           </div>
 
-          <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100vh-120px)] md:h-[calc(100vh-68px)]">
+          <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100dvh-115px)] md:h-[calc(100vh-68px)]">
             {/* Left Panel: Scope Anchor */}
             <section className={`md:col-span-5 h-full overflow-hidden ${mobileTab === "deliverables" ? "block" : "hidden md:block"}`}>
               <BaselinePanel

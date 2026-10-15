@@ -10,19 +10,30 @@
   --border-hover: #CBD5E1;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--bg-canvas);
   color: var(--text-ink);
   font-family: var(--font-jakarta), var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
   /* Very faint, dimmed ambient washes that never overpower text or buttons */
   background-image:
     radial-gradient(ellipse 45% 30% at 15% 10%, rgba(208, 225, 237, 0.18), transparent 60%),
     radial-gradient(ellipse 40% 25% at 85% 15%, rgba(229, 154, 85, 0.12), transparent 60%),
     radial-gradient(ellipse 45% 30% at 50% 90%, rgba(200, 182, 226, 0.14), transparent 60%);
   background-attachment: fixed;
+}
+
+button, a {
+  touch-action: manipulation;
 }
 
 /* Floating pill navbar */

@@ -51,13 +51,13 @@ export function Header({
     project?.decisions.filter((d) => d.status === "POSSIBLE_CHANGE").length || 0;
 
   return (
-    <header className="sticky top-3 z-30 px-4 sm:px-6 py-1 pointer-events-none transition-all">
-      <div className="max-w-7xl mx-auto floating-header rounded-full px-5 py-2.5 flex items-center justify-between pointer-events-auto border border-slate-200/90 shadow-soft">
+    <header className="sticky top-2 sm:top-3 z-30 px-3 sm:px-6 py-1 pointer-events-none transition-all">
+      <div className="max-w-7xl mx-auto floating-header rounded-full px-3 sm:px-5 py-1.5 sm:py-2.5 flex items-center justify-between pointer-events-auto border border-slate-200/90 shadow-soft">
         {/* Brand & Wordmark */}
-        <div className="flex items-center gap-3">
-          <LogoIcon size={30} />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LogoIcon size={28} />
           <div className="flex items-center gap-2">
-            <span className="text-sm font-extrabold text-slate-950 tracking-tight">
+            <span className="text-xs sm:text-sm font-extrabold text-slate-950 tracking-tight">
               ScopeLock
             </span>
             {project && (
@@ -170,19 +170,46 @@ export function Header({
 
               {isUserMenuOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-floating p-2 z-50 animate-in fade-in zoom-in-95"
+                  className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-floating p-2 z-50 animate-in fade-in zoom-in-95"
                   onMouseLeave={() => setIsUserMenuOpen(false)}
                 >
                   <div className="px-3 py-2 border-b border-slate-100 text-xs">
-                    <p className="font-bold text-slate-900">{currentUser.name}</p>
+                    <p className="font-bold text-slate-950">{currentUser.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
                   </div>
+
+                  {project && (
+                    <div className="sm:hidden border-b border-slate-100 py-1 space-y-0.5">
+                      <button
+                        onClick={() => {
+                          onExport();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-800 font-bold text-xs flex items-center gap-2 transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Export Project Backup</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          onResetPrompt();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-rose-50 text-rose-600 font-bold text-xs flex items-center gap-2 transition-colors"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Reset Workspace</span>
+                      </button>
+                    </div>
+                  )}
+
                   <button
                     onClick={() => {
                       onSignOutGithub();
                       setIsUserMenuOpen(false);
                     }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-rose-50 text-rose-600 font-semibold text-xs flex items-center gap-2 mt-1 transition-colors"
+                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-rose-50 text-rose-600 font-bold text-xs flex items-center gap-2 mt-1 transition-colors"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Sign Out</span>
@@ -193,7 +220,7 @@ export function Header({
           ) : (
             <button
               onClick={onOpenGithubAuth}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all hover:scale-102 shadow-sm"
+              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all hover:scale-102 shadow-sm"
               title="Sign in with GitHub"
             >
               <Github className="w-3.5 h-3.5" />
@@ -201,16 +228,16 @@ export function Header({
             </button>
           )}
 
-          {/* Project Actions */}
-          {project ? (
-            <>
+          {/* Project Actions on Desktop */}
+          {project && (
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={onExport}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-xs text-slate-800 font-semibold transition-all"
                 title="Download project JSON"
               >
                 <Download className="w-3.5 h-3.5 text-slate-500" />
-                <span className="hidden sm:inline">Export</span>
+                <span>Export</span>
               </button>
 
               <button
@@ -219,10 +246,13 @@ export function Header({
                 title="Reset workspace"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Reset</span>
+                <span>Reset</span>
               </button>
-            </>
-          ) : (
+            </div>
+          )}
+
+          {/* Primary CTA when not inside active baseline */}
+          {(!project || !activeBaseline) && (
             <>
               <button
                 onClick={onLoadDemoPrompt}

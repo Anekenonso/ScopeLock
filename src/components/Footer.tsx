@@ -107,9 +107,9 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-          <p>© 2026 ScopeLock. All rights reserved</p>
-          <div className="flex items-center gap-3 text-slate-500">
+        <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
+          <p>© 2026 ScopeLock. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-slate-500 text-[11px] sm:text-xs">
             <span>Zero Cloud Leaks</span>
             <span>•</span>
             <span>100% In-Browser Privacy</span>
