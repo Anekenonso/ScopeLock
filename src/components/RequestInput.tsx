@@ -65,14 +65,14 @@ export function RequestInput({ onCompare, disabled }: RequestInputProps) {
   };
 
   return (
-    <div className="contribo-card p-6 space-y-4 shadow-card">
+    <div className="contribo-card p-4 sm:p-6 space-y-4 shadow-card">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <label className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-          <SendHorizontal className="w-4 h-4 text-brand" />
+          <SendHorizontal className="w-4 h-4 text-brand flex-shrink-0" />
           <span>Incoming Request Evaluation</span>
         </label>
-        <span className="text-[11px] text-slate-400 font-medium">
+        <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">
           Type or choose a test below
         </span>
       </div>
@@ -122,19 +122,19 @@ export function RequestInput({ onCompare, disabled }: RequestInputProps) {
       </div>
 
       {/* Dedicated, perfectly aligned bottom action bar */}
-      <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-        <span className="text-[11px] text-slate-500 flex items-center gap-1 font-mono">
+      <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <span className="text-[11px] text-slate-500 hidden sm:flex items-center gap-1 font-mono">
           <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 font-semibold">Ctrl</span>
           <span>+</span>
           <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 font-semibold">Enter</span>
-          <span className="hidden sm:inline">to compare immediately</span>
+          <span>to compare immediately</span>
         </span>
 
         <button
           type="button"
           onClick={() => handleSubmit()}
           disabled={!requestText.trim() || disabled}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-950 text-white font-extrabold text-xs hover:bg-slate-800 disabled:opacity-40 shadow-sm transition-all hover:scale-102 active:scale-98 flex-shrink-0"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 sm:py-2.5 rounded-full bg-slate-950 text-white font-extrabold text-xs hover:bg-slate-800 disabled:opacity-40 shadow-sm transition-all hover:scale-102 active:scale-98 flex-shrink-0"
         >
           <span>Compare Scope</span>
           <ArrowRight className="w-3.5 h-3.5" />

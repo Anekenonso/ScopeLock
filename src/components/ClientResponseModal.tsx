@@ -85,12 +85,12 @@ Could you clarify the specific user flow or requirements so we can make sure we'
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-floating overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-floating overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center text-sky-700">
+            <div className="w-8 h-8 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center text-sky-700 flex-shrink-0">
               <Mail className="w-4 h-4" />
             </div>
             <div>
@@ -104,19 +104,19 @@ Could you clarify the specific user flow or requirements so we can make sure we'
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-1 rounded-full transition-colors"
+            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-full transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Template Selector Pills */}
-        <div className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
+        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Style:
             </span>
-            <div className="grid grid-cols-3 gap-1.5 flex-1">
+            <div className="flex flex-wrap sm:grid sm:grid-cols-3 gap-1.5 flex-1">
               <button
                 type="button"
                 onClick={() => setTemplateType("change_order")}

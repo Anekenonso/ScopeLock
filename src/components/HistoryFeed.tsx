@@ -112,9 +112,9 @@ export function HistoryFeed({ decisions }: HistoryFeedProps) {
   };
 
   return (
-    <div className="contribo-card p-6 space-y-4 shadow-card">
+    <div className="contribo-card p-4 sm:p-6 space-y-4 shadow-card">
       {/* Top Header Row */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2.5">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-brand" />
           <h3 className="text-xs uppercase tracking-wider text-slate-900 font-extrabold">
@@ -126,14 +126,14 @@ export function HistoryFeed({ decisions }: HistoryFeedProps) {
         </div>
 
         {decisions.length > 3 && (
-          <div className="relative w-48">
+          <div className="relative w-full sm:w-48">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter decisions..."
-              className="w-full pl-8 pr-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand"
+              className="w-full pl-8 pr-3 py-1.5 sm:py-1 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand"
             />
           </div>
         )}
@@ -216,8 +216,8 @@ export function HistoryFeed({ decisions }: HistoryFeedProps) {
               key={decision.id}
               className="p-4 rounded-2xl bg-white border border-slate-200/80 space-y-2.5 hover:border-slate-300 shadow-sm transition-all group"
             >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {getActionBadge(decision.action)}
                   {getStatusPill(decision.status)}
                 </div>

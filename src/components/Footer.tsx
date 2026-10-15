@@ -17,7 +17,7 @@ import {
 export function Footer() {
   return (
     <footer className="mt-16 border-t border-slate-200 bg-white/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mb-10">
           {/* Brand & Mission (5 cols) */}
           <div className="md:col-span-5 space-y-3.5">

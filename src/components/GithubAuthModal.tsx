@@ -44,8 +44,8 @@ export function GithubAuthModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-floating p-6 sm:p-8 space-y-5 animate-in slide-in-from-bottom-6 sm:slide-in-from-top-6 duration-300 ease-out text-slate-900 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-floating p-5 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-6 sm:slide-in-from-top-6 duration-300 ease-out text-slate-900 relative">
         {/* Action Reason Banner if triggered by a protected feature */}
         {actionReason && (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-light/80 border border-brand/20 text-brand text-xs font-bold">

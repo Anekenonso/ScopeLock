@@ -44,6 +44,7 @@ export default function WorkspacePage() {
   const [currentUser, setCurrentUser] = useState<GithubUser | null>(null);
   const [pendingAction, setPendingAction] = useState<"brief" | "demo" | null>(null);
   const [authTriggerReason, setAuthTriggerReason] = useState<string>("");
+  const [mobileTab, setMobileTab] = useState<"deliverables" | "radar">("deliverables");
 
   const [isDraftMode, setIsDraftMode] = useState(false);
   const [draftItems, setDraftItems] = useState<ScopeItem[]>([]);
@@ -245,6 +246,7 @@ export default function WorkspacePage() {
     const result = comparator.evaluate(requestText, activeBaseline.items);
     setCurrentRequestText(requestText);
     setComparisonResult(result);
+    setMobileTab("radar");
   };
 
   // Handle selecting a Kill-Test scenario from the header
@@ -254,6 +256,7 @@ export default function WorkspacePage() {
     const comparator = createComparator();
     const result = comparator.evaluate(scenario.request, activeBaseline.items);
     setComparisonResult(result);
+    setMobileTab("radar");
     addToast("info", `Ran Test Case #${scenario.id}`, scenario.description);
   };
 
@@ -491,64 +494,99 @@ export default function WorkspacePage() {
         </main>
       ) : (
         // Split-View Workspace
-        <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100vh-68px)] relative z-10 mt-2 bg-slate-50/50">
-          {/* Left Panel: Scope Anchor */}
-          <section className="md:col-span-5 h-full overflow-hidden">
-            <BaselinePanel
-              activeBaseline={activeBaseline}
-              baselines={project.baselines}
-              draftItems={draftItems}
-              isDraftMode={isDraftMode}
-              highlightedItemIds={comparisonResult?.matchedItemIds || []}
-              onSaveDraftItem={handleSaveDraftItem}
-              onDeleteDraftItem={handleDeleteDraftItem}
-              onAddDraftItem={handleAddDraftItem}
-              onApproveBaseline={handleApproveBaseline}
-              onStartEditingDraft={handleStartEditingDraft}
-              onSelectVersion={(id) => {
-                const b = project.baselines.find((item) => item.id === id) || null;
-                setActiveBaseline(b);
-              }}
-            />
-          </section>
+        <div className="flex-1 flex flex-col overflow-hidden relative z-10 bg-slate-50/50">
+          {/* Mobile Segmented Switcher (< md) */}
+          <div className="md:hidden flex items-center justify-center px-4 py-2 bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-16 z-20">
+            <div className="flex items-center p-1 bg-slate-100 rounded-full w-full max-w-sm border border-slate-200 shadow-sm">
+              <button
+                type="button"
+                onClick={() => setMobileTab("deliverables")}
+                className={`flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  mobileTab === "deliverables"
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-600 hover:text-slate-950"
+                }`}
+              >
+                <Lock className="w-3.5 h-3.5 text-brand" />
+                <span>Deliverables ({activeBaseline?.items.length || 0})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileTab("radar")}
+                className={`flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  mobileTab === "radar"
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-600 hover:text-slate-950"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-brand" />
+                <span>Scope Radar</span>
+                {comparisonResult && (
+                  <span className="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                )}
+              </button>
+            </div>
+          </div>
 
-          {/* Right Panel: Request Evaluation & Decision Audit */}
-          <section className="md:col-span-7 h-full overflow-y-auto p-6 space-y-6 bg-slate-100/50">
-            {/* 1. Request Input */}
-            <RequestInput
-              onCompare={handleCompareRequest}
-              disabled={!activeBaseline || isDraftMode}
-            />
-
-            {/* In Draft Mode Warning */}
-            {isDraftMode && (
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5 font-bold shadow-sm">
-                <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                <span>
-                  Baseline is in draft mode. Click &ldquo;Lock Baseline&rdquo; on the left to activate the comparison engine.
-                </span>
-              </div>
-            )}
-
-            {/* 2. Comparison Result Card */}
-            {comparisonResult && activeBaseline && (
-              <ComparisonCard
-                requestText={currentRequestText}
-                result={comparisonResult}
-                baselineItems={activeBaseline.items}
-                onRecordDecision={handleRecordDecision}
-                onClear={() => {
-                  setComparisonResult(null);
-                  setCurrentRequestText("");
+          <main className="flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[calc(100vh-120px)] md:h-[calc(100vh-68px)]">
+            {/* Left Panel: Scope Anchor */}
+            <section className={`md:col-span-5 h-full overflow-hidden ${mobileTab === "deliverables" ? "block" : "hidden md:block"}`}>
+              <BaselinePanel
+                activeBaseline={activeBaseline}
+                baselines={project.baselines}
+                draftItems={draftItems}
+                isDraftMode={isDraftMode}
+                highlightedItemIds={comparisonResult?.matchedItemIds || []}
+                onSaveDraftItem={handleSaveDraftItem}
+                onDeleteDraftItem={handleDeleteDraftItem}
+                onAddDraftItem={handleAddDraftItem}
+                onApproveBaseline={handleApproveBaseline}
+                onStartEditingDraft={handleStartEditingDraft}
+                onSelectVersion={(id) => {
+                  const b = project.baselines.find((item) => item.id === id) || null;
+                  setActiveBaseline(b);
                 }}
-                onOpenClientReplyModal={() => setIsClientModalOpen(true)}
               />
-            )}
+            </section>
 
-            {/* 3. Decision Audit History Feed */}
-            <HistoryFeed decisions={project.decisions} />
-          </section>
-        </main>
+            {/* Right Panel: Request Evaluation & Decision Audit */}
+            <section className={`md:col-span-7 h-full overflow-y-auto p-4 sm:p-6 space-y-6 bg-slate-100/50 ${mobileTab === "radar" ? "block" : "hidden md:block"}`}>
+              {/* 1. Request Input */}
+              <RequestInput
+                onCompare={handleCompareRequest}
+                disabled={!activeBaseline || isDraftMode}
+              />
+
+              {/* In Draft Mode Warning */}
+              {isDraftMode && (
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5 font-bold shadow-sm">
+                  <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span>
+                    Baseline is in draft mode. Click &ldquo;Lock Baseline&rdquo; on the left to activate the comparison engine.
+                  </span>
+                </div>
+              )}
+
+              {/* 2. Comparison Result Card */}
+              {comparisonResult && activeBaseline && (
+                <ComparisonCard
+                  requestText={currentRequestText}
+                  result={comparisonResult}
+                  baselineItems={activeBaseline.items}
+                  onRecordDecision={handleRecordDecision}
+                  onClear={() => {
+                    setComparisonResult(null);
+                    setCurrentRequestText("");
+                  }}
+                  onOpenClientReplyModal={() => setIsClientModalOpen(true)}
+                />
+              )}
+
+              {/* 3. Decision Audit History Feed */}
+              <HistoryFeed decisions={project.decisions} />
+            </section>
+          </main>
+        </div>
       )}
 
       {/* Footer */}

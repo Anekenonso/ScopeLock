@@ -105,13 +105,13 @@ export function ComparisonCard({
 
   return (
     <div
-      className={`rounded-3xl bg-white border ${statusConfig.cardBorder} p-6 shadow-floating space-y-4 animate-in fade-in slide-in-from-top-3 duration-200`}
+      className={`rounded-3xl bg-white border ${statusConfig.cardBorder} p-4 sm:p-6 shadow-floating space-y-4 animate-in fade-in slide-in-from-top-3 duration-200`}
     >
       {/* Top Status Header */}
-      <div className="flex items-start justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-3">
+        <div className="flex items-start sm:items-center gap-3">
           <div
-            className={`px-3.5 py-1.5 rounded-full border text-xs font-extrabold flex items-center gap-2 ${statusConfig.badgeClass}`}
+            className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full border text-xs font-extrabold flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ${statusConfig.badgeClass}`}
           >
             {statusConfig.icon}
             <span>{statusConfig.title}</span>
@@ -127,11 +127,11 @@ export function ComparisonCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
           {/* Client response generator button */}
           <button
             onClick={onOpenClientReplyModal}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-900 text-xs font-bold transition-all hover:scale-102"
+            className="flex items-center justify-center gap-1.5 flex-1 sm:flex-initial px-4 py-2 sm:py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-900 text-xs font-bold transition-all hover:scale-102"
             title="Draft an email/message to the client"
           >
             <Mail className="w-3.5 h-3.5 text-brand" />
@@ -140,7 +140,7 @@ export function ComparisonCard({
 
           <button
             onClick={onClear}
-            className="text-xs text-slate-400 hover:text-slate-700 p-1.5 transition-colors rounded-full"
+            className="text-xs text-slate-400 hover:text-slate-700 p-2 sm:p-1.5 transition-colors rounded-full"
             title="Dismiss evaluation"
           >
             <X className="w-4 h-4" />
@@ -238,7 +238,8 @@ export function ComparisonCard({
             }`}
           >
             <X className="w-4 h-4 stroke-[2.5]" />
-            <span>Reject / Change Order</span>
+            <span className="hidden sm:inline">Reject / Change Order</span>
+            <span className="sm:hidden">Reject</span>
           </button>
 
           <button

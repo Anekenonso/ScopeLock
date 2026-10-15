@@ -45,8 +45,8 @@ export function BriefIngestModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-5 animate-in zoom-in-95 duration-200 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/50 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl shadow-2xl p-5 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200 text-slate-900">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700 shadow-sm">

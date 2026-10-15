@@ -66,7 +66,7 @@ export function BaselinePanel({
   return (
     <div className="flex flex-col h-full bg-white border-r border-slate-200">
       {/* Panel Header */}
-      <div className="p-5 border-b border-slate-100 space-y-3.5 bg-slate-50/50">
+      <div className="p-4 sm:p-5 border-b border-slate-100 space-y-3 bg-slate-50/50 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div
@@ -141,7 +141,7 @@ export function BaselinePanel({
       </div>
 
       {/* Items List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/20">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 bg-slate-50/20">
         {filteredItems.length === 0 ? (
           <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl bg-white">
             <p className="text-xs text-slate-500">
@@ -152,7 +152,7 @@ export function BaselinePanel({
             {isDraftMode && rawItems.length === 0 && (
               <button
                 onClick={onAddDraftItem}
-                className="mt-3 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-900 font-bold transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-900 font-bold transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add First Deliverable</span>
@@ -166,7 +166,7 @@ export function BaselinePanel({
             return (
               <div
                 key={item.id}
-                className={`p-4 rounded-2xl border transition-all duration-200 ${
+                className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 ${
                   isHighlighted
                     ? "bg-sky-50/80 border-sky-400 shadow-sm ring-2 ring-sky-200"
                     : isDraftMode
@@ -192,7 +192,7 @@ export function BaselinePanel({
                         className="w-full bg-transparent border-b border-slate-200 hover:border-brand focus:border-brand text-xs font-bold text-slate-950 px-1 py-0.5 focus:outline-none transition-colors mt-1"
                       />
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs font-extrabold text-slate-950 tracking-tight">
                           {item.title}
                         </span>
@@ -212,7 +212,7 @@ export function BaselinePanel({
                   {isDraftMode && (
                     <button
                       onClick={() => onDeleteDraftItem(item.id)}
-                      className="text-slate-400 hover:text-rose-600 p-1 rounded-full transition-colors"
+                      className="text-slate-400 hover:text-rose-600 p-1.5 rounded-full transition-colors"
                       title="Remove deliverable"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -245,12 +245,12 @@ export function BaselinePanel({
       </div>
 
       {/* Footer Pill Action */}
-      <div className="p-4 border-t border-slate-100 bg-white">
+      <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-white flex-shrink-0">
         {isDraftMode ? (
           <div className="space-y-2">
             <button
               onClick={onAddDraftItem}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-900 font-bold transition-all"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-900 font-bold transition-all"
             >
               <Plus className="w-3.5 h-3.5 text-slate-700" />
               <span>Add Deliverable</span>
@@ -270,7 +270,7 @@ export function BaselinePanel({
         ) : (
           <button
             onClick={onStartEditingDraft}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-800 font-bold transition-all hover:scale-101 border border-slate-200"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs text-slate-800 font-bold transition-all hover:scale-101 border border-slate-200"
           >
             <FileEdit className="w-3.5 h-3.5 text-slate-600" />
             <span>Draft Revision (v{baselines.length + 1}.0)</span>
